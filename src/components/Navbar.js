@@ -14,14 +14,14 @@ function Navbar() {
       link: "/members",
       hasSubmenu: true,
       submenu: [
-        { name: "BAESA 2024-25", link: "#2024-25" },
-        { name: "BAESA 2016-17", link: "#2016-17" },
-        { name: "BAESA 2014-15", link: "#2014-15" },
+        { name: "BAESA 2024-25", link: "/members" },
+        { name: "BAESA 2016-17", link: "/members" },
+        { name: "BAESA 2014-15", link: "/members" },
       ],
     },
     { name: "NEWS AND EVENTS", link: "/news" },
     { name: "PHOTO GALLERY", link: "#gallery" },
-    { name: "MESSAGES", link: "#messages" },
+    { name: "MESSAGES", link: "/members" },
     { name: "CONTACT", link: "/contact" },
   ];
   return (
@@ -196,7 +196,7 @@ function Navbar() {
       {isMobileMenuOpen && (
         <div
           onClick={() => setIsMobileMenuOpen(false)}
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="fixed inset-0 bg-white/20 backdrop-blur-xs z-40 lg:hidden"
         />
       )}
     </nav>
