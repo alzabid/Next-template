@@ -7,11 +7,11 @@ function Navbar() {
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
   const menuItems = [
-    { name: "ABOUT", link: "#about" },
+    { name: "ABOUT", link: "/about" },
     { name: "BAESA EXECUTIVES", link: "#executives" },
     {
       name: "BAESA MEMBERS",
-      link: "#members",
+      link: "/members",
       hasSubmenu: true,
       submenu: [
         { name: "BAESA 2024-25", link: "#2024-25" },
@@ -19,10 +19,10 @@ function Navbar() {
         { name: "BAESA 2014-15", link: "#2014-15" },
       ],
     },
-    { name: "NEWS AND EVENTS", link: "#news" },
+    { name: "NEWS AND EVENTS", link: "/news" },
     { name: "PHOTO GALLERY", link: "#gallery" },
     { name: "MESSAGES", link: "#messages" },
-    { name: "CONTACT", link: "#contact" },
+    { name: "CONTACT", link: "/contact" },
   ];
   return (
     <nav className="w-full bg-white shadow-md">
