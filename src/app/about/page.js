@@ -1,7 +1,9 @@
-import React from 'react'
 
-export default function aboutPage() {
+
+export default function AboutPage() {
   return (
-    <div className='text-2xl text-amber-500 text-center'>aboutPage</div>
-  )
+    <div className=" min-h-screen text-2xl text-amber-500 text-center">
+      <h2>this is about page</h2>
+    </div>
+  );
 }

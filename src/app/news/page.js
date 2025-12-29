@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function newsPage() {
+export default function NewsPage() {
   return (
     <div>newsPage</div>
   )
