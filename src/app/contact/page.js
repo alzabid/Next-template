@@ -37,7 +37,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-blue-100 text-white py-16">
+      {/* <div className="bg-gradient-to-r from-blue-50 to-blue-100 text-white py-16">
         <div className="text-center max-w-7xl mx-auto px-4">
           <h1 className=" text-blue-800 text-4xl md:text-5xl font-bold mb-4">
             Contact Us
@@ -45,6 +45,30 @@ export default function ContactPage() {
           <p className="text-blue-900 text-lg">
             Get in touch with Bangladesh Atomic Energy Scientist's Association
           </p>
+        </div>
+      </div> */}
+
+      <div className="relative h-76 bg-gradient-to-r from-blue-900 to-blue-800 overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&h=800&fit=crop')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        </div>
+        <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              Contact Us
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100">
+              Get in touch with Bangladesh Atomic Energy Scientist's Association
+            </p>
+          </div>
         </div>
       </div>
 
