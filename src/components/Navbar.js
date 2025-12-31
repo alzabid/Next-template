@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
+import logo from "../assets/logo.png";
+import Image from "next/image";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,32 +31,30 @@ function Navbar() {
       {/* Header Top Section */}
       <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-b-2 border-blue-900">
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-          <div className="flex items-center justify-center md:justify-start">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center gap-10">
               {/* Logo */}
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
+              <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
                 <div className="relative">
-                  <div
-                    className="w-12 h-12 md:w-16 md:h-16 border-2 border-blue-900 rotate-0 flex items-center justify-center"
-                    style={{ clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)" }}
-                  >
-                    <div className="flex flex-col items-center justify-center text-blue-900 text-xs">
-                      <span className="font-bold">⚛</span>
-                      <span className="font-bold">⚡</span>
-                      <span className="font-bold">⚙</span>
-                    </div>
+                  <div className="w-16 h-16 md:w-24 md:h-24 border-2 rounded-lg border-blue-900 rotate-0 flex items-center justify-center">
+                    <Image src={logo} alt="logo" width={500} height={500} />
                   </div>
                 </div>
               </div>
 
               {/* Title */}
-              <div className="flex flex-col">
+              <div className="flex flex-col items-center">
                 <h1 className="text-xl md:text-3xl font-bold text-blue-900 leading-tight">
-                  <span className="block">বাংলাদেশ পরমাণু শক্তি</span>
-                  <span className="block">বিজ্ঞানী সমিতি</span>
+                  <span className="block">
+                    বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংঘ (বায়েসা)
+                  </span>
                 </h1>
-                <p className="text-sm md:text-base text-blue-800 mt-1 font-medium">
+                <p className="text-sm md:text-2xl text-blue-800 mt-1 font-medium">
                   Bangladesh Atomic Energy Scientist's Association (BAESA)
+                </p>
+                <p className="text-sm md:text-base text-blue-800 mt-1 font-medium">
+                  পরমাণু ভবন, ই-১২/এ, আগারগাও, শেরেবাংলা নাগর, ধাকা-১২০৭,
+                  বাংলাদেশ
                 </p>
               </div>
             </div>
@@ -66,12 +66,12 @@ function Navbar() {
       <div className="bg-white">
         <div className="max-w-7xl mx-auto px-4">
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-stretch border border-black">
-            <ul className="flex items-stretch w-full">
+          <div className="hidden lg:flex">
+            <ul className="flex justify-between items-center w-full">
               {menuItems.map((item, index) => (
                 <li
                   key={index}
-                  className="relative group border-r border-black last:border-r-0"
+                  className="relative group"
                 >
                   {item.hasSubmenu ? (
                     <div className="relative h-full">
@@ -80,10 +80,7 @@ function Navbar() {
                       </button>
 
                       {/* Submenu */}
-                      <div className="absolute left-0 top-full w-full min-w-[200px] bg-white border border-black border-t-0 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <div className="bg-gray-50 px-4 py-2 border-b border-black text-xs font-bold uppercase">
-                          SUB-MENU
-                        </div>
+                      <div className="absolute left-0 top-full w-full min-w-[200px] bg-white border-2 border-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         {item.submenu.map((subItem, subIndex) => (
                           <a
                             key={subIndex}
