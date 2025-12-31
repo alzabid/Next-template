@@ -1,133 +1,131 @@
-'use client'
+"use client";
 import { useState } from "react";
 import { Search, Mail, Award, Building2, Users, Filter } from "lucide-react";
 
-
 export default function MembersPage() {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedDepartment, setSelectedDepartment] = useState("All");
-    const [selectedYear, setSelectedYear] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("All");
+  const [selectedYear, setSelectedYear] = useState("All");
 
-    // Sample members data
-    const members = [
-      {
-        id: 1,
-        name: "Dr. Mohammad Rahman",
-        title: "Chief Scientific Officer",
-        department: "Nuclear Physics",
-        specialization: "Particle Physics & Radiation",
-        email: "dr.rahman@baesa.org.bd",
-        joinYear: "2024",
-        image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=MR",
-      },
-      {
-        id: 2,
-        name: "Dr. Fatema Khatun",
-        title: "Senior Scientist",
-        department: "Radiation Safety",
-        specialization: "Health Physics & Safety",
-        email: "dr.khatun@baesa.org.bd",
-        joinYear: "2024",
-        image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=FK",
-      },
-      {
-        id: 3,
-        name: "Dr. Kamal Hossain",
-        title: "Principal Scientist",
-        department: "Nuclear Medicine",
-        specialization: "Medical Imaging & Therapy",
-        email: "dr.hossain@baesa.org.bd",
-        joinYear: "2024",
-        image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=KH",
-      },
-      {
-        id: 4,
-        name: "Dr. Shahana Ahmed",
-        title: "Senior Research Officer",
-        department: "Nuclear Agriculture",
-        specialization: "Crop Improvement",
-        email: "dr.ahmed@baesa.org.bd",
-        joinYear: "2016",
-        image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=SA",
-      },
-      {
-        id: 5,
-        name: "Dr. Abdul Jabbar",
-        title: "Scientific Officer",
-        department: "Nuclear Physics",
-        specialization: "Nuclear Reactions",
-        email: "dr.jabbar@baesa.org.bd",
-        joinYear: "2016",
-        image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=AJ",
-      },
-      {
-        id: 6,
-        name: "Dr. Nasrin Sultana",
-        title: "Research Scientist",
-        department: "Nuclear Medicine",
-        specialization: "Radiopharmaceuticals",
-        email: "dr.sultana@baesa.org.bd",
-        joinYear: "2014",
-        image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=NS",
-      },
-      {
-        id: 7,
-        name: "Dr. Mizanur Rahman",
-        title: "Senior Scientist",
-        department: "Radiation Safety",
-        specialization: "Environmental Monitoring",
-        email: "dr.mizan@baesa.org.bd",
-        joinYear: "2014",
-        image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=MZ",
-      },
-      {
-        id: 8,
-        name: "Dr. Ayesha Siddiqua",
-        title: "Principal Scientist",
-        department: "Nuclear Agriculture",
-        specialization: "Plant Breeding",
-        email: "dr.siddiqua@baesa.org.bd",
-        joinYear: "2024",
-        image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
-      },
-    ];
+  // Sample members data
+  const members = [
+    {
+      id: 1,
+      name: "Dr. Mohammad Rahman",
+      title: "Chief Scientific Officer",
+      department: "Nuclear Physics",
+      specialization: "Particle Physics & Radiation",
+      email: "dr.rahman@baesa.org.bd",
+      joinYear: "2024",
+      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=MR",
+    },
+    {
+      id: 2,
+      name: "Dr. Fatema Khatun",
+      title: "Senior Scientist",
+      department: "Radiation Safety",
+      specialization: "Health Physics & Safety",
+      email: "dr.khatun@baesa.org.bd",
+      joinYear: "2024",
+      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=FK",
+    },
+    {
+      id: 3,
+      name: "Dr. Kamal Hossain",
+      title: "Principal Scientist",
+      department: "Nuclear Medicine",
+      specialization: "Medical Imaging & Therapy",
+      email: "dr.hossain@baesa.org.bd",
+      joinYear: "2024",
+      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=KH",
+    },
+    {
+      id: 4,
+      name: "Dr. Shahana Ahmed",
+      title: "Senior Research Officer",
+      department: "Nuclear Agriculture",
+      specialization: "Crop Improvement",
+      email: "dr.ahmed@baesa.org.bd",
+      joinYear: "2016",
+      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=SA",
+    },
+    {
+      id: 5,
+      name: "Dr. Abdul Jabbar",
+      title: "Scientific Officer",
+      department: "Nuclear Physics",
+      specialization: "Nuclear Reactions",
+      email: "dr.jabbar@baesa.org.bd",
+      joinYear: "2016",
+      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=AJ",
+    },
+    {
+      id: 6,
+      name: "Dr. Nasrin Sultana",
+      title: "Research Scientist",
+      department: "Nuclear Medicine",
+      specialization: "Radiopharmaceuticals",
+      email: "dr.sultana@baesa.org.bd",
+      joinYear: "2014",
+      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=NS",
+    },
+    {
+      id: 7,
+      name: "Dr. Mizanur Rahman",
+      title: "Senior Scientist",
+      department: "Radiation Safety",
+      specialization: "Environmental Monitoring",
+      email: "dr.mizan@baesa.org.bd",
+      joinYear: "2014",
+      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=MZ",
+    },
+    {
+      id: 8,
+      name: "Dr. Ayesha Siddiqua",
+      title: "Principal Scientist",
+      department: "Nuclear Agriculture",
+      specialization: "Plant Breeding",
+      email: "dr.siddiqua@baesa.org.bd",
+      joinYear: "2024",
+      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
+    },
+  ];
 
-    const departments = [
-      "All",
-      "Nuclear Physics",
-      "Radiation Safety",
-      "Nuclear Medicine",
-      "Nuclear Agriculture",
-    ];
-    const years = ["All", "2024", "2016", "2014"];
+  const departments = [
+    "All",
+    "Nuclear Physics",
+    "Radiation Safety",
+    "Nuclear Medicine",
+    "Nuclear Agriculture",
+  ];
+  const years = ["All", "2024", "2016", "2014"];
 
-    const filteredMembers = members.filter((member) => {
-      const matchesSearch =
-        member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        member.specialization.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesDepartment =
-        selectedDepartment === "All" ||
-        member.department === selectedDepartment;
-      const matchesYear =
-        selectedYear === "All" || member.joinYear === selectedYear;
-      return matchesSearch && matchesDepartment && matchesYear;
-    });
+  const filteredMembers = members.filter((member) => {
+    const matchesSearch =
+      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDepartment =
+      selectedDepartment === "All" || member.department === selectedDepartment;
+    const matchesYear =
+      selectedYear === "All" || member.joinYear === selectedYear;
+    return matchesSearch && matchesDepartment && matchesYear;
+  });
 
-    const memberStats = {
-      total: members.length,
-      departments: [...new Set(members.map((m) => m.department))].length,
-      years: [...new Set(members.map((m) => m.joinYear))].length,
-    };
+  const memberStats = {
+    total: members.length,
+    departments: [...new Set(members.map((m) => m.department))].length,
+    years: [...new Set(members.map((m) => m.joinYear))].length,
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-16">
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 py-16">
         <div className="text-center max-w-7xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Our Scientists
           </h1>
-          <p className="text-blue-100 text-lg">
+          <p className="text-blue-900 text-lg">
             Meet the brilliant minds advancing atomic energy science in
             Bangladesh
           </p>
@@ -188,13 +186,13 @@ export default function MembersPage() {
             {/* Search Bar */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className=" text-black absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Search by name or specialization..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </div>
@@ -206,7 +204,7 @@ export default function MembersPage() {
                 <select
                   value={selectedDepartment}
                   onChange={(e) => setSelectedDepartment(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
+                  className="w-full pl-10 pr-4 py-3  text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
                 >
                   {departments.map((dept) => (
                     <option key={dept} value={dept}>
@@ -222,7 +220,7 @@ export default function MembersPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
+                className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white"
               >
                 <option value="All">All Years</option>
                 {years
@@ -311,7 +309,7 @@ export default function MembersPage() {
       </div>
 
       {/* Join Us Section */}
-      <div className="bg-gradient-to-b from-blue-200 to-blue-200 text-white py-12 mt-12">
+      <div className=" bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 py-12 mt-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
             Interested in Joining BAESA?
@@ -320,7 +318,7 @@ export default function MembersPage() {
             We welcome qualified scientists and researchers to join our
             community
           </p>
-          <button className="bg-white text-blue-900 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200 shadow-lg">
+          <button className="bg-blue-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-900 transition-colors duration-200 shadow-lg">
             Apply for Membership
           </button>
         </div>
@@ -328,4 +326,3 @@ export default function MembersPage() {
     </div>
   );
 }
-

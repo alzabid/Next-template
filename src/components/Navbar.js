@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import logo from "../assets/logo.png";
 import Image from "next/image";
+import Link from "next/link";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -34,17 +35,19 @@ function Navbar() {
           <div className="flex items-center justify-center">
             <div className="flex items-center gap-10">
               {/* Logo */}
-              <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
-                <div className="relative">
-                  <div className="w-16 h-16 md:w-24 md:h-24 border-2 rounded-lg border-blue-900 rotate-0 flex items-center justify-center">
-                    <Image src={logo} alt="logo" width={500} height={500} />
+              <Link href="/">
+                <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
+                  <div className="relative">
+                    <div className="w-16 h-16 md:w-24 md:h-24 border-2 rounded-lg border-blue-900 rotate-0 flex items-center justify-center">
+                      <Image src={logo} alt="logo" width={500} height={500} />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Title */}
               <div className="flex flex-col items-center">
-                <h1 className="text-xl md:text-3xl font-bold text-blue-900 leading-tight">
+                <h1 className="text-xl md:text-4xl font-bold text-blue-900 leading-tight">
                   <span className="block">
                     বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংঘ (বায়েসা)
                   </span>
@@ -63,16 +66,13 @@ function Navbar() {
       </div>
 
       {/* Navigation Menu */}
-      <div className="bg-white">
+      <div className="bg-white border-b-2 border-blue-900">
         <div className="max-w-7xl mx-auto px-4">
           {/* Desktop Menu */}
           <div className="hidden lg:flex">
             <ul className="flex justify-between items-center w-full">
               {menuItems.map((item, index) => (
-                <li
-                  key={index}
-                  className="relative group"
-                >
+                <li key={index} className="relative group">
                   {item.hasSubmenu ? (
                     <div className="relative h-full">
                       <button className="h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap">
@@ -82,23 +82,23 @@ function Navbar() {
                       {/* Submenu */}
                       <div className="absolute left-0 top-full w-full min-w-[200px] bg-white border-2 border-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         {item.submenu.map((subItem, subIndex) => (
-                          <a
+                          <Link
                             key={subIndex}
                             href={subItem.link}
                             className="block px-4 py-2.5 text-sm text-black hover:bg-gray-100 border-b border-black last:border-b-0 uppercase"
                           >
                             {subItem.name}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     </div>
                   ) : (
-                    <a
+                    <Link
                       href={item.link}
                       className="block h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   )}
                 </li>
               ))}
