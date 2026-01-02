@@ -23,7 +23,7 @@ function Navbar() {
       ],
     },
     { name: "NEWS AND EVENTS", link: "/news" },
-    { name: "PHOTO GALLERY", link: "#gallery" },
+    { name: "PHOTO GALLERY", link: "/gallery" },
     { name: "MESSAGES", link: "/members" },
     { name: "CONTACT", link: "/contact" },
   ];
