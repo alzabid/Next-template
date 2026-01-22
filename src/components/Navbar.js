@@ -56,7 +56,7 @@ function Navbar() {
                   Bangladesh Atomic Energy Scientist's Association (BAESA)
                 </p>
                 <p className="text-sm md:text-base text-blue-800 mt-1 font-medium">
-                  পরমাণু ভবন, ই-১২/এ, আগারগাও, শেরেবাংলা নাগর, ধাকা-১২০৭,
+                  পরমাণু ভবন, ই-১২/এ, আগারগাও, শেরেবাংলা নাগর, ঢাকা-১২০৭,
                   বাংলাদেশ
                 </p>
               </div>
