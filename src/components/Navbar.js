@@ -11,16 +11,26 @@ function Navbar() {
 
   const menuItems = [
     { name: "ABOUT", link: "/about" },
-    { name: "BAESA EXECUTIVES", link: "#executives" },
     {
-      name: "BAESA MEMBERS",
-      link: "/members",
+      name: "BAESA EXECUTIVES",
+      link: "/member",
       hasSubmenu: true,
       submenu: [
+        { name: "BAESA 2025-26", link: "/members" },
         { name: "BAESA 2024-25", link: "/members" },
         { name: "BAESA 2016-17", link: "/members" },
         { name: "BAESA 2014-15", link: "/members" },
       ],
+    },
+    {
+      name: "BAESA MEMBERS",
+      link: "/members",
+      // hasSubmenu: true,
+      // submenu: [
+      //   { name: "BAESA 2024-25", link: "/members" },
+      //   { name: "BAESA 2016-17", link: "/members" },
+      //   { name: "BAESA 2014-15", link: "/members" },
+      // ],
     },
     { name: "NEWS AND EVENTS", link: "/news" },
     { name: "PHOTO GALLERY", link: "/gallery" },

@@ -1,6 +1,14 @@
 "use client";
 import { useState } from "react";
-import { Search, Mail, Award, Building2, Users, Filter } from "lucide-react";
+import {
+  Search,
+  Mail,
+  Award,
+  Building2,
+  Users,
+  Filter,
+  MailCheck,
+} from "lucide-react";
 
 export default function MembersPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,99 +19,96 @@ export default function MembersPage() {
   const members = [
     {
       id: 1,
-      name: "Dr. Mohammad Rahman",
-      title: "Chief Scientific Officer",
-      department: "Nuclear Physics",
-      specialization: "Particle Physics & Radiation",
-      email: "dr.rahman@baesa.org.bd",
+      name: "Dr. Md. Asad Shariff",
+      title: "Director & Chief Scientific Officer",
+      department: "Bangladesh Atomic Energy Commission",
+      email: "asad_shariff_roni@yahoo.com",
       joinYear: "2024",
-      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=MR",
+      image:
+        "https://baec.org.bd/uploads/images/researchers/1757845365_cropped_image.png",
     },
     {
       id: 2,
-      name: "Dr. Fatema Khatun",
-      title: "Senior Scientist",
-      department: "Radiation Safety",
-      specialization: "Health Physics & Safety",
-      email: "dr.khatun@baesa.org.bd",
+      name: "Dr. Afroja Sultana",
+      title: "Medical Officer",
+      department: "National Institute of Nuclear Medicine & Allied Sciences",
+      email: "afrojasultanashukhi@gmail.com",
       joinYear: "2024",
-      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=FK",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
     },
     {
       id: 3,
-      name: "Dr. Kamal Hossain",
-      title: "Principal Scientist",
-      department: "Nuclear Medicine",
-      specialization: "Medical Imaging & Therapy",
-      email: "dr.hossain@baesa.org.bd",
+      name: "Dr. Mohammad Rajib",
+      title: "Principal Geologist",
+      department: "Institute of Nuclear Geological Sciences",
+      email: "rajib.mohammad@gmail.com",
       joinYear: "2024",
-      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=KH",
+      image:
+        "https://baec.org.bd/uploads/images/researchers/1763444837_cropped_image.png",
     },
     {
       id: 4,
-      name: "Dr. Shahana Ahmed",
-      title: "Senior Research Officer",
-      department: "Nuclear Agriculture",
-      specialization: "Crop Improvement",
-      email: "dr.ahmed@baesa.org.bd",
+      name: "Dr. Md. Abdullah Al Mamun",
+      title: "Principal Scientific Officer",
+      department: "Atomic Energy Centre, Dhaka",
+      email: "mamun.aec@baec.gov.bd",
       joinYear: "2016",
-      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=SA",
+      image:
+        "https://baec.org.bd/uploads/images/researchers/1765797505_cropped_image.png",
     },
     {
       id: 5,
-      name: "Dr. Abdul Jabbar",
-      title: "Scientific Officer",
-      department: "Nuclear Physics",
-      specialization: "Nuclear Reactions",
-      email: "dr.jabbar@baesa.org.bd",
+      name: "Dr. Azmal Kabir Sarker",
+      title: "Principal Medical Officer",
+      department: "Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
+      email: "azmalbaec@gmail.com",
       joinYear: "2016",
-      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=AJ",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
     },
     {
       id: 6,
-      name: "Dr. Nasrin Sultana",
-      title: "Research Scientist",
-      department: "Nuclear Medicine",
-      specialization: "Radiopharmaceuticals",
-      email: "dr.sultana@baesa.org.bd",
+      name: "Mr. Md. Mosharraf Hosain",
+      title: "Scientific Officer",
+      department: "Institute of Food and Radiation Biology",
+      email: "mosharrafjnu722@gmaiI.com",
       joinYear: "2014",
-      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=NS",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
     },
     {
       id: 7,
-      name: "Dr. Mizanur Rahman",
-      title: "Senior Scientist",
-      department: "Radiation Safety",
-      specialization: "Environmental Monitoring",
-      email: "dr.mizan@baesa.org.bd",
+      name: "Mr. Md. Aliuzzaman",
+      title: "Principal Scientific Officer",
+      department:
+        "Bangladesh Atomic Energy Commission",
+      email: "palash.eng07@gmail.com",
       joinYear: "2014",
-      image: "https://via.placeholder.com/200x200/2563eb/ffffff?text=MZ",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
     },
-    {
-      id: 8,
-      name: "Dr. Ayesha Siddiqua",
-      title: "Principal Scientist",
-      department: "Nuclear Agriculture",
-      specialization: "Plant Breeding",
-      email: "dr.siddiqua@baesa.org.bd",
-      joinYear: "2024",
-      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
-    },
+    // {
+    //   id: 8,
+    //   name: "Dr. Ayesha Siddiqua",
+    //   title: "Principal Scientist",
+    //   department: "Nuclear Agriculture",
+    //   email: "dr.siddiqua@baesa.org.bd",
+    //   joinYear: "2024",
+    //   image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
+    // },
   ];
 
   const departments = [
     "All",
-    "Nuclear Physics",
-    "Radiation Safety",
-    "Nuclear Medicine",
-    "Nuclear Agriculture",
+    "Bangladesh Atomic Energy Commission",
+    "National Institute of Nuclear Medicine & Allied Sciences",
+    "Institute of Nuclear Geological Sciences",
+    "Atomic Energy Centre, Dhaka",
+    "Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
+    "Institute of Food and Radiation Biology",
   ];
   const years = ["All", "2024", "2016", "2014"];
 
   const filteredMembers = members.filter((member) => {
     const matchesSearch =
-      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      member.specialization.toLowerCase().includes(searchTerm.toLowerCase());
+      member.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDepartment =
       selectedDepartment === "All" || member.department === selectedDepartment;
     const matchesYear =
@@ -247,15 +252,15 @@ export default function MembersPage() {
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border-t-4 border-blue-600 group"
             >
               {/* Member Image */}
-              <div className="relative h-48 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
+              <div className="relative h-72 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
                 <img
                   src={member.image}
                   alt={member.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
-                <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                {/* <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
                   {member.joinYear}
-                </div>
+                </div> */}
               </div>
 
               {/* Member Info */}
@@ -273,10 +278,9 @@ export default function MembersPage() {
                     <p className="text-xs text-gray-600">{member.department}</p>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Award className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-600">
-                      {member.specialization}
-                    </p>
+                    <MailCheck className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+                    {/* <Award className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" /> */}
+                    <p className="text-xs text-gray-600">{member.email}</p>
                   </div>
                 </div>
 

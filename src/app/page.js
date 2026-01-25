@@ -2,7 +2,9 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, Calendar, BookOpen, Award, Users, ArrowRight, CheckCircle } from 'lucide-react';
 
+
 export default function Home() {
+  
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
 
