@@ -32,15 +32,15 @@ function Navbar() {
     { name: "CONTACT", link: "/contact" },
   ];
   return (
-    <nav className="w-full bg-white shadow-md">
+    <nav className="w-full flex flex-col-reverse md:flex-col ">
       {/* Header Top Section */}
-      <div className="bg-gradient-to-r from-blue-100 to-blue-100">
+      <div className=" hidden lg:flex bg-blue-100">
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
           <div className="flex items-center justify-center">
-            <div className="flex items-center gap-10">
+            <div className="flex items-center gap-0 lg:gap-10">
               {/* Logo */}
               <Link href="/">
-                <div className=" hidden lg:flex w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
+                <div className=" hidden lg:flex w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md items-center justify-center">
                   <div className="relative">
                     <div className="w-16 h-16 md:w-24 md:h-24 border-2 rounded-lg border-blue-900 rotate-0 flex items-center justify-center">
                       <Image src={logo} alt="logo" width={500} height={500} />
@@ -50,13 +50,11 @@ function Navbar() {
               </Link>
 
               {/* Title */}
-              <div className="flex flex-col items-center">
-                <h1 className="text-xl md:text-4xl font-bold text-blue-900 leading-tight">
-                  <span className="block">
-                    বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংঘ (বায়েসা)
-                  </span>
+              <div className="hidden lg:flex flex-col items-center text-center">
+                <h1 className="text-2xl md:text-4xl font-bold text-blue-900 leading-tight">
+                  বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংঘ (বায়েসা)
                 </h1>
-                <p className="text-sm md:text-2xl text-blue-800 mt-1 font-medium">
+                <p className="text-base md:text-2xl text-blue-800 mt-1 font-medium">
                   Bangladesh Atomic Energy Scientist's Association (BAESA)
                 </p>
                 <p className="text-sm md:text-base text-blue-800 mt-1 font-medium">
@@ -110,13 +108,15 @@ function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden flex items-center justify-between py-4">
+          <div className="lg:hidden flex items-center justify-between py-2">
             {/* logo */}
             <Link href="/">
-              <div className="w-16 h-16 bg-white flex items-center justify-center">
+              <div className="w-16 h-16 flex items-center justify-center">
                 <Image src={logo} alt="logo" width={500} height={500} />
               </div>
             </Link>
+  
+            {/* toggle button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-md hover:bg-gray-100 transition-colors"
