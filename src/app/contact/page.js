@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   Mail,
   Phone,
@@ -9,45 +9,129 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ContactPage() {
-   const [formData, setFormData] = useState({
-     name: "",
-     email: "",
-     phone: "",
-     subject: "",
-     message: "",
-   });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-   const handleSubmit = (e) => {
-     e.preventDefault();
-     console.log("Form submitted:", formData);
-     // Add your form submission logic here
-     alert("Thank you for your message! We will get back to you soon.");
-     setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
-   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-   const handleChange = (e) => {
-     setFormData({
-       ...formData,
-       [e.target.name]: e.target.value,
-     });
+    try {
+      // EmailJS configuration
+      const serviceID = "service_303rl4i"; // Replace with your EmailJS service ID
+      const templateID = "template_oea431i"; // Replace with your EmailJS template ID
+      const publicKey = "4rcY5Ty4sBntDWU_k"; // Replace with your EmailJS public key
+
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+        to_email: "shopifypatner002@gmail.com", // Your email address
+      };
+
+      const response = await fetch(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            service_id: serviceID,
+            template_id: templateID,
+            user_id: publicKey,
+            template_params: templateParams,
+          }),
+        },
+      );
+
+      if (response.ok) {
+        toast.success(
+          "Message sent successfully! We'll get back to you soon.",
+          {
+            duration: 4000,
+            position: "top-center",
+            style: {
+              background: "#10b981",
+              color: "#fff",
+              fontWeight: "600",
+              padding: "16px",
+              borderRadius: "8px",
+            },
+            iconTheme: {
+              primary: "#fff",
+              secondary: "#10b981",
+            },
+          },
+        );
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          message: "",
+        });
+      } else {
+        toast.error(
+          "Failed to send message. Please try again or email us directly.",
+          {
+            duration: 4000,
+            position: "top-center",
+            style: {
+              background: "#ef4444",
+              color: "#fff",
+              fontWeight: "600",
+              padding: "16px",
+              borderRadius: "8px",
+            },
+          },
+        );
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast.error(
+        "✗ Failed to send message. Please try again or email us directly.",
+        {
+          duration: 4000,
+          position: "top-center",
+          style: {
+            background: "#ef4444",
+            color: "#fff",
+            fontWeight: "600",
+            padding: "16px",
+            borderRadius: "8px",
+          },
+        },
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-  
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      {/* Page Header */}
-      {/* <div className="bg-gradient-to-r from-blue-50 to-blue-100 text-white py-16">
-        <div className="text-center max-w-7xl mx-auto px-4">
-          <h1 className=" text-blue-800 text-4xl md:text-5xl font-bold mb-4">
-            Contact Us
-          </h1>
-          <p className="text-blue-900 text-lg">
-            Get in touch with Bangladesh Atomic Energy Scientist's Association
-          </p>
-        </div>
-      </div> */}
+      {/* Toast Container */}
+      <Toaster />
 
+      {/* Page Header */}
       <div className="relative h-76 bg-gradient-to-r from-blue-900 to-blue-800 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div
@@ -187,7 +271,8 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
                 Send Us a Message
               </h2>
-              <div className="space-y-6">
+
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Name */}
                 <div>
                   <label
@@ -206,7 +291,8 @@ export default function ContactPage() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className=" text-black block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      required
+                      className="text-black block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                       placeholder="Enter your full name"
                     />
                   </div>
@@ -231,6 +317,7 @@ export default function ContactPage() {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
+                        required
                         className="text-black block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         placeholder="your.email@example.com"
                       />
@@ -275,6 +362,7 @@ export default function ContactPage() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
+                    required
                     className="text-black block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                     placeholder="What is this regarding?"
                   />
@@ -297,6 +385,7 @@ export default function ContactPage() {
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
+                      required
                       rows={6}
                       className="text-black block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
                       placeholder="Write your message here..."
@@ -307,18 +396,28 @@ export default function ContactPage() {
                 {/* Submit Button */}
                 <div>
                   <button
-                    onClick={handleSubmit}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send className="w-5 h-5" />
-                    Send Message
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5" />
+                        Send Message
+                      </>
+                    )}
                   </button>
                 </div>
 
                 <p className="text-sm text-gray-500 text-center">
                   We will respond to your message within 24-48 hours
                 </p>
-              </div>
+              </form>
             </div>
           </div>
         </div>

@@ -31,7 +31,7 @@ export default function Home() {
       title: "Join Our Scientific Community",
       subtitle: "Collaborate with leading atomic energy scientists",
       image:
-        "https://images.unsplash.com/photo-1581093458791-9d42e3c2e0b0?w=1920&h=600&fit=crop",
+        "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=1920&h=600&fit=crop",
       buttonText: "Become a Member",
     },
   ];
@@ -120,7 +120,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Banner Slider */}
-      <div className="relative h-[500px] md:h-[600px] overflow-hidden">
+      <div className="relative h-[500px] md:h-[800px] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={slide.id}

@@ -13,24 +13,18 @@ function Navbar() {
     { name: "ABOUT", link: "/about" },
     {
       name: "BAESA EXECUTIVES",
-      link: "/member",
+      link: "/executives",
       hasSubmenu: true,
       submenu: [
-        { name: "BAESA 2025-26", link: "/members" },
-        { name: "BAESA 2024-25", link: "/members" },
-        { name: "BAESA 2016-17", link: "/members" },
-        { name: "BAESA 2014-15", link: "/members" },
+        { name: "BAESA 2025-26", link: "/executives" },
+        { name: "BAESA 2024-25", link: "/" },
+        { name: "BAESA 2016-17", link: "/" },
+        { name: "BAESA 2014-15", link: "/" },
       ],
     },
     {
       name: "BAESA MEMBERS",
       link: "/members",
-      // hasSubmenu: true,
-      // submenu: [
-      //   { name: "BAESA 2024-25", link: "/members" },
-      //   { name: "BAESA 2016-17", link: "/members" },
-      //   { name: "BAESA 2014-15", link: "/members" },
-      // ],
     },
     { name: "NEWS AND EVENTS", link: "/news" },
     { name: "PHOTO GALLERY", link: "/gallery" },
@@ -40,13 +34,13 @@ function Navbar() {
   return (
     <nav className="w-full bg-white shadow-md">
       {/* Header Top Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-blue-100 border-b-2 border-blue-900">
+      <div className="bg-gradient-to-r from-blue-100 to-blue-100">
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
           <div className="flex items-center justify-center">
             <div className="flex items-center gap-10">
               {/* Logo */}
               <Link href="/">
-                <div className="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
+                <div className=" hidden lg:flex w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg shadow-md flex items-center justify-center border-2 border-blue-900">
                   <div className="relative">
                     <div className="w-16 h-16 md:w-24 md:h-24 border-2 rounded-lg border-blue-900 rotate-0 flex items-center justify-center">
                       <Image src={logo} alt="logo" width={500} height={500} />
@@ -76,7 +70,7 @@ function Navbar() {
       </div>
 
       {/* Navigation Menu */}
-      <div className="bg-white border-b-2 border-blue-900">
+      <div className="bg-white border-b-2 border-t-2 border-blue-900">
         <div className="max-w-7xl mx-auto px-4">
           {/* Desktop Menu */}
           <div className="hidden lg:flex">
@@ -117,7 +111,12 @@ function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center justify-between py-4">
-            <span className="text-lg font-bold text-blue-900">Menu</span>
+            {/* logo */}
+            <Link href="/">
+              <div className="w-16 h-16 bg-white flex items-center justify-center">
+                <Image src={logo} alt="logo" width={500} height={500} />
+              </div>
+            </Link>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="p-2 rounded-md hover:bg-gray-100 transition-colors"
