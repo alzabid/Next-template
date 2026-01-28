@@ -149,7 +149,7 @@ export default function ContactPage() {
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
               Contact Us
             </h1>
-            <p className="text-xl md:text-2xl text-blue-100">
+            <p className="text-lg md:text-xl text-blue-100">
               Get in touch with Bangladesh Atomic Energy Scientist's Association
             </p>
           </div>
@@ -267,7 +267,7 @@ export default function ContactPage() {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-8 border-t-4 border-blue-600">
+            <div className="bg-white rounded-lg shadow-lg px-4 py-6 md:p-8 border-t-4 border-blue-600">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">
                 Send Us a Message
               </h2>
@@ -424,13 +424,13 @@ export default function ContactPage() {
 
         {/* Map Section */}
         <div className="mt-12">
-          <div className="bg-white rounded-lg shadow-lg p-6 border-t-4 border-blue-600">
+          <div className="bg-white rounded-lg shadow-lg px-3 py-6 md:p-6 border-t-4 border-blue-600">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               Find Us on Map
             </h2>
             <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3650.8477486784937!2d90.38414931543298!3d23.779254793586736!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c09f9ba3d447%3A0x1babce9f4c9fc0d8!2sBangladesh%20Atomic%20Energy%20Commission!5e0!3m2!1sen!2sbd!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7302.21248978888!2d90.37154224232786!3d23.779230695031607!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c0b3b46d3d9d%3A0x563c8f9c2bf1a1b8!2sBangladesh%20Atomic%20Energy%20Commission!5e0!3m2!1sen!2sbd!4v1769622048682!5m2!1sen!2sbd"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -438,7 +438,7 @@ export default function ContactPage() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="BAESA Location Map"
-              />
+              />              
             </div>
           </div>
         </div>

@@ -1,9 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, Calendar, BookOpen, Award, Users, ArrowRight, CheckCircle } from 'lucide-react';
-import BannerSlider from '@/components/BannerSlider';
-
-
+import Link from 'next/link';
 
 export default function Home() {
   
@@ -82,6 +80,15 @@ export default function Home() {
   // Recent Events
   const recentEvents = [
     {
+      id: 3,
+      title: "Annual BAESA Picnic 2026",
+      date: "February 7, 2026",
+      description:
+        "Annual gathering of BAESA members to discuss achievements and plan future initiatives.",
+      image:
+        "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop",
+    },
+    {
       id: 1,
       title: "International Nuclear Science Conference 2025",
       date: "March 15-17, 2025",
@@ -99,15 +106,7 @@ export default function Home() {
       image:
         "https://images.unsplash.com/photo-1582560475093-ba66accbc424?w=400&h=300&fit=crop",
     },
-    {
-      id: 3,
-      title: "Annual General Meeting 2025",
-      date: "January 28, 2025",
-      description:
-        "Annual gathering of BAESA members to discuss achievements and plan future initiatives.",
-      image:
-        "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop",
-    },
+   
   ];
 
   // Achievements
@@ -275,10 +274,12 @@ export default function Home() {
                   {event.title}
                 </h3>
                 <p className="text-gray-600 mb-4">{event.description}</p>
-                <button className="text-blue-600 font-semibold hover:text-blue-700 flex items-center gap-2">
-                  Learn More
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                <Link href="/news/events">
+                  <button className="text-blue-600 font-semibold cursor-pointer hover:text-blue-700 flex items-center gap-2">
+                    Learn More
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
               </div>
             </div>
           ))}
@@ -361,9 +362,11 @@ export default function Home() {
           <p className="text-blue-900 text-lg mb-6">
             Connect with us to explore research opportunities and partnerships
           </p>
-          <button className="bg-blue-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-900 transition-colors duration-200 shadow-lg">
-            Contact Us Today
-          </button>
+          <Link href="/contact">
+            <button className="bg-blue-800 text-white px-8 py-3 rounded-lg cursor-pointer font-semibold hover:bg-blue-900 transition-colors duration-200 shadow-lg">
+              Contact Us Today
+            </button>
+          </Link>
         </div>
       </div>
     </div>

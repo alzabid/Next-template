@@ -82,29 +82,27 @@ export default function ExecutivesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Page Header */}
-      {/* <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            BAESA Executives
-          </h1>
-          <h2 className="text-2xl md:text-xl text-blue-100 mb-2 text-center">
-            Dedicated scientists leading BAESA with vision and expertise
-          </h2>
-         
+      <div className="relative h-76 bg-gradient-to-r from-blue-900 to-blue-800 overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&h=800&fit=crop')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
         </div>
-      </div> */}
-      
-      <div className=" text-blue-800 py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-            BAESA Executives
-          </h1>
-          <h2 className="text-2xl md:text-xl text-blue-900 mb-2 text-center">
-            Dedicated scientists leading BAESA with vision and expertise
-          </h2>
-          {/* <p className="text-blue-100 text-lg text-center">
-            Meet our distinguished leadership team
-          </p> */}
+        <div className="relative z-10 h-full flex items-center justify-center text-center px-4">
+          <div className="max-w-4xl">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              BAESA Executives
+            </h1>
+            <p className="text-lg md:text-xl text-blue-100">
+              Meet our distinguished leadership team
+            </p>
+          </div>
         </div>
       </div>
 
@@ -136,7 +134,7 @@ export default function ExecutivesPage() {
       </div> */}
 
       {/* Executives Section */}
-      <div className="max-w-7xl mx-auto px-4 pb-16">
+      <div className="max-w-7xl mx-auto px-4 py-16">
         {/* <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Our Leadership Team
@@ -239,8 +237,8 @@ export default function ExecutivesPage() {
       </div>
 
       {/* Message Section */}
-      <div className="bg-gradient-to-r from-blue-0 to-blue-0 py-16">
-        <div className="max-w-4xl mx-auto px-4">
+      <div className="py-16">
+        <div className="max-w-4xl mx-auto px-0">
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-8 text-center">
             <h3 className="text-2xl md:text-3xl font-bold text-blue-800 mb-4">
               Working Together for Scientific Excellence

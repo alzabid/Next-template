@@ -97,7 +97,7 @@ function Navbar() {
                   ) : (
                     <Link
                       href={item.link}
-                      className="block h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
+                      className="h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
                     >
                       {item.name}
                     </Link>
@@ -115,7 +115,10 @@ function Navbar() {
                 <Image src={logo} alt="logo" width={500} height={500} />
               </div>
             </Link>
-            <span className="text-2xl font-bold text-blue-900">BAESA</span>
+
+            <Link href="/">
+              <span className="text-2xl font-bold text-blue-900">BAESA</span>
+            </Link>
 
             {/* toggle button */}
             <button
