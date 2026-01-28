@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, ChevronDown, Calendar, BookOpen, Award, Users, ArrowRight, CheckCircle } from 'lucide-react';
+import BannerSlider from '@/components/BannerSlider';
+
 
 
 export default function Home() {
@@ -118,9 +120,9 @@ export default function Home() {
 
  
   return (
-    <div className="min-h-screen bg-white">
+    <div className=" bg-white">
       {/* Banner Slider */}
-      <div className="relative h-[500px] md:h-[800px] overflow-hidden">
+      <div className="relative h-[500] md:h-[800] overflow-hidden">
         {slides.map((slide, index) => (
           <div
             key={slide.id}

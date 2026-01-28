@@ -82,7 +82,7 @@ function Navbar() {
                       </button>
 
                       {/* Submenu */}
-                      <div className="absolute left-0 top-full w-full min-w-[200px] bg-white border-2 border-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                      <div className="absolute left-0 top-full w-full min-w-[200] bg-white border-2 border-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                         {item.submenu.map((subItem, subIndex) => (
                           <Link
                             key={subIndex}
@@ -115,7 +115,8 @@ function Navbar() {
                 <Image src={logo} alt="logo" width={500} height={500} />
               </div>
             </Link>
-  
+            <span className="text-2xl font-bold text-blue-900">BAESA</span>
+
             {/* toggle button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

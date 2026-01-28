@@ -96,7 +96,7 @@ export default function MembersPage() {
   ];
 
   const departments = [
-    "All",
+    "Select Institute",
     "Bangladesh Atomic Energy Commission",
     "National Institute of Nuclear Medicine & Allied Sciences",
     "Institute of Nuclear Geological Sciences",
@@ -138,7 +138,7 @@ export default function MembersPage() {
       </div>
 
       {/* Statistics Section */}
-      <div className="max-w-7xl mx-auto px-4 -mt-8">
+      {/* <div className="max-w-7xl mx-auto px-4 -mt-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-blue-600">
             <div className="flex items-center gap-4">
@@ -182,11 +182,11 @@ export default function MembersPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+      <div className="max-w-7xl mx-auto px-4 py-2">
+        <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Bar */}
             <div className="flex-1">
@@ -203,7 +203,7 @@ export default function MembersPage() {
             </div>
 
             {/* Department Filter */}
-            <div className="md:w-64">
+            <div className="md:w-[400]">
               <div className="relative">
                 <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <select
@@ -221,7 +221,7 @@ export default function MembersPage() {
             </div>
 
             {/* Year Filter */}
-            <div className="md:w-48">
+            {/* <div className="md:w-48">
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(e.target.value)}
@@ -236,7 +236,7 @@ export default function MembersPage() {
                     </option>
                   ))}
               </select>
-            </div>
+            </div> */}
           </div>
 
           <div className="mt-4 text-sm text-gray-600">
@@ -313,7 +313,7 @@ export default function MembersPage() {
       </div>
 
       {/* Join Us Section */}
-      <div className=" bg-gradient-to-r from-blue-50 to-blue-100 text-blue-800 py-12 mt-12">
+      <div className=" text-blue-800 py-12 mt-12">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
             Interested in Joining BAESA?
@@ -322,7 +322,7 @@ export default function MembersPage() {
             We welcome qualified scientists and researchers to join our
             community
           </p>
-          <button className="bg-blue-800 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-900 transition-colors duration-200 shadow-lg">
+          <button className="bg-blue-800 text-white px-8 py-3 rounded-lg cursor-pointer font-semibold hover:bg-blue-900 transition-colors duration-200 shadow-lg">
             Apply for Membership
           </button>
         </div>
