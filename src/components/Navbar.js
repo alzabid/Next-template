@@ -26,7 +26,7 @@ function Navbar() {
       name: "BAESA MEMBERS",
       link: "/members",
     },
-    { name: "NEWS AND EVENTS", link: "/news" },
+    { name: "NEWS AND EVENTS", link: "/news/events" },
     { name: "PHOTO GALLERY", link: "/gallery" },
     { name: "MESSAGES", link: "/members" },
     { name: "CONTACT", link: "/contact" },

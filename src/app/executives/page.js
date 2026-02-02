@@ -71,6 +71,85 @@ export default function ExecutivesPage() {
       phone: "+880-XXX-XXXXXX",
       department: "Principal Engineer, Bangladesh Atomic Energy Commission",
     },
+    {
+      id: 7,
+      name: "Dr. Md. Asad Shariff",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      department:
+        "Director & Chief Scientific Officer, Bangladesh Atomic Energy Commission",
+      email: "asad_shariff_roni@yahoo.com",
+      image:
+        "https://baec.org.bd/uploads/images/researchers/1757845365_cropped_image.png",
+    },
+    {
+      id: 8,
+      name: "Dr. Afroja Sultana",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      department:
+        "Medical Officer, National Institute of Nuclear Medicine & Allied Sciences",
+      email: "afrojasultanashukhi@gmail.com",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
+    },
+    {
+      id: 9,
+      name: "Dr. Mohammad Rajib",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      department:
+        "Principal Geologist, Institute of Nuclear Geological Sciences",
+      email: "rajib.mohammad@gmail.com",
+      image:
+        "https://baec.org.bd/uploads/images/researchers/1763444837_cropped_image.png",
+    },
+    {
+      id: 10,
+      name: "Dr. Md. Abdullah Al Mamun",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      department: "Principal Scientific Officer, Atomic Energy Centre, Dhaka",
+      email: "mamun.aec@baec.gov.bd",
+      image:
+        "https://baec.org.bd/uploads/images/researchers/1765797505_cropped_image.png",
+    },
+    {
+      id: 11,
+      name: "Dr. Azmal Kabir Sarker",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      title: "",
+      department:
+        "Principal Medical Officer, Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
+      email: "azmalbaec@gmail.com",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
+    },
+    {
+      id: 12,
+      name: "Mr. Md. Mosharraf Hosain",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      department: "Scientific Officer, Institute of Food and Radiation Biology",
+      email: "mosharrafjnu722@gmaiI.com",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
+    },
+    {
+      id: 13,
+      name: "Mr. Md. Aliuzzaman",
+      position: "পরিষদ সদস্য",
+      positionEn: "Council Member",
+      phone: "+880-XXX-XXXXXX",
+      department:
+        "Principal Scientific Officer, Bangladesh Atomic Energy Commission",
+      email: "palash.eng07@gmail.com",
+      image: "https://baec.org.bd/assets/image_placeholder.png",
+    },
   ];
 
   // Statistics

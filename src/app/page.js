@@ -86,7 +86,7 @@ export default function Home() {
       description:
         "Annual gathering of BAESA members to discuss achievements and plan future initiatives.",
       image:
-        "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop",
+        "https://github.com/alzabid/Next-template/blob/main/public/picnic.jpg?raw=true",
     },
     {
       id: 1,
@@ -106,7 +106,6 @@ export default function Home() {
       image:
         "https://images.unsplash.com/photo-1582560475093-ba66accbc424?w=400&h=300&fit=crop",
     },
-   
   ];
 
   // Achievements
