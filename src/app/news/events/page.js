@@ -90,7 +90,7 @@ export default function BAESAPicnicPage() {
 
                   <tr className="border-b border-gray-200 hover:bg-blue-50 transition-colors">
                     <td className="font-bengali py-4 px-6 text-gray-800 font-medium">
-                      ইভেন্টসমুহ
+                      ইভেন্টসমূহ
                     </td>
                     <td className="font-bengali py-4 px-6 text-gray-700">
                       সকাল ১০.০০ – দুপুর ১.৩০টা
@@ -176,7 +176,7 @@ export default function BAESAPicnicPage() {
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-transparent" />
-            </div> 
+            </div>
 
             {/* Right Side - Text Content */}
             <div className="p-8 md:p-12 flex flex-col justify-center">
