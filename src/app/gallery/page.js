@@ -169,7 +169,8 @@ export default function PhotoGallery() {
               Photo Gallery
             </h1>
             <p className="text-xl md:text-xl text-blue-100">
-              Explore moments from our conferences, workshops, and scientific activities
+              Explore moments from our conferences, workshops, and scientific
+              activities
             </p>
           </div>
         </div>
