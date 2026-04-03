@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5000/api/v1";
+const API_BASE = "https://next-template-server.vercel.app/api/v1";
 const IMGBB_API_KEY = "cdeef2d905fb0d2f03c64731c19f17ef";
 
 // ─── Helper ───────────────────────────────────────────────
