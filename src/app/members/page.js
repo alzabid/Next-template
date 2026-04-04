@@ -84,15 +84,15 @@ export default function MembersPage() {
       joinYear: "2014",
       image: "https://baec.org.bd/assets/image_placeholder.png",
     },
-    // {
-    //   id: 8,
-    //   name: "Dr. Ayesha Siddiqua",
-    //   title: "Principal Scientist",
-    //   department: "Nuclear Agriculture",
-    //   email: "dr.siddiqua@baesa.org.bd",
-    //   joinYear: "2024",
-    //   image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
-    // },
+    {
+      id: 8,
+      name: "Dr. Ayesha Siddiqua",
+      title: "Principal Scientist",
+      department: "Nuclear Agriculture",
+      email: "dr.siddiqua@baesa.org.bd",
+      joinYear: "2024",
+      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
+    },
   ];
 
   const departments = [

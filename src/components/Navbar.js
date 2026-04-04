@@ -28,7 +28,7 @@ function Navbar() {
     },
     { name: "NEWS AND EVENTS", link: "/news/events" },
     { name: "PHOTO GALLERY", link: "/gallery" },
-    { name: "MESSAGES", link: "/members" },
+    { name: "NOTICE BOARD", link: "/notice" },
     { name: "CONTACT", link: "/contact" },
   ];
   return (

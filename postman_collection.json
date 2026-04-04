@@ -1,11 +1,31 @@
 {
   "info": {
-    "_postman_id": "9ea1e4a3-0dbe-42b8-be23-2eaf0ef5dac0",
     "name": "Nuclear Gallery Server API",
     "description": "API collection for Nuclear Science Gallery Management Server",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "40165239"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "galleryItemId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "noticeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
   "item": [
     {
       "name": "Auth",
@@ -40,16 +60,10 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "register"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Login (Super Admin)",
@@ -81,16 +95,10 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Login (Regular User)",
@@ -122,16 +130,10 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "login"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Get My Profile",
@@ -145,16 +147,10 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/auth/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "me"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Refresh Token",
@@ -172,16 +168,10 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/refresh-token",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "refresh-token"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh-token"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Logout",
@@ -190,16 +180,10 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/auth/logout",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "logout"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
             }
-          },
-          "response": []
+          }
         }
       ]
     },
@@ -218,15 +202,10 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/gallery",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gallery"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Get Gallery Item by ID",
@@ -240,16 +219,10 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/gallery/{{galleryItemId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gallery",
-                "{{galleryItemId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", "{{galleryItemId}}"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Create Gallery Item",
@@ -285,15 +258,10 @@
             },
             "url": {
               "raw": "{{baseUrl}}/gallery",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gallery"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Update Gallery Item",
@@ -315,16 +283,10 @@
             },
             "url": {
               "raw": "{{baseUrl}}/gallery/{{galleryItemId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gallery",
-                "{{galleryItemId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", "{{galleryItemId}}"]
             }
-          },
-          "response": []
+          }
         },
         {
           "name": "Delete Gallery Item",
@@ -338,32 +300,132 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/gallery/{{galleryItemId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "gallery",
-                "{{galleryItemId}}"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["gallery", "{{galleryItemId}}"]
             }
-          },
-          "response": []
+          }
         }
       ]
-    }
-  ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:5000/api/v1"
     },
     {
-      "key": "accessToken",
-      "value": ""
-    },
-    {
-      "key": "galleryItemId",
-      "value": ""
+      "name": "Notice",
+      "item": [
+        {
+          "name": "Get All Notices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notice",
+              "host": ["{{baseUrl}}"],
+              "path": ["notice"]
+            }
+          }
+        },
+        {
+          "name": "Get Notice by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notice/{{noticeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["notice", "{{noticeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Notice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "  pm.collectionVariables.set('noticeId', res.data.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Important: Lab Maintenance Scheduled\",\n  \"body\": \"The nuclear research lab will be undergoing scheduled maintenance from April 10-12, 2026. All experiments must be concluded before the maintenance window. Please contact the admin office for further details.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notice",
+              "host": ["{{baseUrl}}"],
+              "path": ["notice"]
+            }
+          }
+        },
+        {
+          "name": "Update Notice",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated: Lab Maintenance Rescheduled\",\n  \"body\": \"The maintenance has been rescheduled to April 15-17, 2026. We apologize for the inconvenience.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notice/{{noticeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["notice", "{{noticeId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Notice",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notice/{{noticeId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["notice", "{{noticeId}}"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
