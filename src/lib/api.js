@@ -142,6 +142,64 @@ export async function deleteNotice(id) {
   return data;
 }
 
+// ─── Event API ────────────────────────────────────────────
+// Public endpoints (no auth required)
+export async function getPublishedEvents() {
+  const res = await fetch(`${API_BASE}/event`);
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(data.message || "Something went wrong");
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
+
+export async function getEventBySlug(slug) {
+  const res = await fetch(`${API_BASE}/event/slug/${slug}`);
+  const data = await res.json();
+  if (!res.ok) {
+    const error = new Error(data.message || "Something went wrong");
+    error.status = res.status;
+    throw error;
+  }
+  return data;
+}
+
+// Admin endpoints (auth required)
+export async function getAdminEvents() {
+  const data = await request("/event/admin/all");
+  return data;
+}
+
+export async function getAdminEvent(id) {
+  const data = await request(`/event/admin/${id}`);
+  return data;
+}
+
+export async function createEvent(payload) {
+  const data = await request("/event", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return data;
+}
+
+export async function updateEvent(id, payload) {
+  const data = await request(`/event/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+  return data;
+}
+
+export async function deleteEvent(id) {
+  const data = await request(`/event/${id}`, {
+    method: "DELETE",
+  });
+  return data;
+}
+
 // ─── ImageBB Upload ───────────────────────────────────────
 export async function uploadToImageBB(file) {
   const formData = new FormData();

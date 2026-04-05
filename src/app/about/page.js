@@ -146,18 +146,10 @@ export default function AboutPage() {
             Who We Are
           </h2>
           <p className="text-lg text-gray-600 leading-relaxed mb-6">
-            Bangladesh Atomic Energy Scientist's Association (BAESA) is the
-            premier professional organization representing atomic energy
-            scientists and researchers in Bangladesh. Since our establishment in
-            1984, we have been dedicated to advancing nuclear science, promoting
-            research excellence, and contributing to national development
-            through peaceful applications of atomic energy.
+            স্বাধীন বাংলাদেশে পরমাণু শক্তির শান্তিপূর্ণ ব্যবহারের উদ্দেশ্যে ১৯৭২ সালে বাংলাদেশ আণবিক শক্তি কমিশন গঠিত হয় যা বর্তমানে প্রাণপ্রিয় প্রতিষ্ঠান বাংলাদেশ পরমাণু শক্তি কমিশন। একই বৎসর অর্থাৎ ১৯৭২ সালেই কমিশনের সকল বিজ্ঞানীর স্বার্থ রক্ষার্থে “বাংলাদেশ আনবিক শক্তি বিজ্ঞানী সংঘ” গঠিত হয় যা পরবর্তীতে “বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংঘ (বায়েসা)” হিসেবে নামান্তরিত হয়।
           </p>
           <p className="text-lg text-gray-600 leading-relaxed">
-            Our association brings together brilliant minds from various
-            disciplines including nuclear physics, radiation safety, nuclear
-            medicine, and nuclear agriculture, creating a collaborative
-            ecosystem for scientific innovation and knowledge exchange.
+       বায়েসা একটি অত্যন্ত মর্যাদাসম্পন্ন ঐতিহ্যবাহী এক অনন্য পেশাজীবি সংগঠন। কমিশন তথা বিজ্ঞানীদের কল্যানে বায়েসার বলিষ্ঠ ভূমিকা সর্বজনবিদিত। বায়েসা বাংলাদেশ পরমাণু কমিশনের বিভিন্ন প্রতিষ্ঠানে কর্মরত সকল পর্যায়ের বিজ্ঞানীদের প্রতিনিধিত্বকারী একমাত্র সংগঠন। কমিশনের পূর্বতন অনেক প্রথিতযশা বিজ্ঞানী- যাঁদের অবদান, মেধা, প্রজ্ঞা, দৃঢ়তা ও সাহসী নেতৃত্বের কথা আমরা সবসময়ই সশ্রদ্ধচিত্তে স্মরণ করি, তাঁদের অনেকেই বায়েসার কর্মপরিষদে বিভিন্ন সময়ে নির্বাচিত প্রতিনিধি হিসেবে অনেক অনুকরণীয় কাজ করে গেছেন।
           </p>
         </div>
       </div>
@@ -293,7 +285,7 @@ export default function AboutPage() {
       </div>
 
       {/* Leadership Team */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      {/* <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Our Leadership
@@ -327,7 +319,7 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Statistics Section */}
       <div className="bg-gradient-to-br from-blue-50 to-white py-16">

@@ -52,22 +52,6 @@ export default function NoticePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      {/* Page Header */}
-      <div className="text-blue-800 py-16">
-        <div className="text-center max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30">
-              <Megaphone className="w-7 h-7 text-white" />
-            </div>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Notice Board</h1>
-          <p className="text-blue-900 text-lg max-w-2xl mx-auto">
-            Stay updated with the latest announcements, notifications, and
-            important information from BAESA
-          </p>
-        </div>
-      </div>
-
       {/* Marquee Ticker */}
         <div className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 overflow-hidden shadow-lg">
           {/* Decorative elements */}
@@ -114,7 +98,7 @@ export default function NoticePage() {
                       {notice.title}
                     </button>
                     {notice.createdAt && (
-                      <span className="text-blue-300/60 text-xs ml-3">
+                      <span className="text-blue-100 text-xs ml-3">
                         ({formatDate(notice.createdAt)})
                       </span>
                     )}
@@ -124,6 +108,23 @@ export default function NoticePage() {
             </div>
           </div>
         </div>
+      {/* Page Header */}
+      <div className="text-blue-800 py-16">
+        <div className="text-center max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30">
+              <Megaphone className="w-7 h-7 text-white" />
+            </div>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Notice Board</h1>
+          <p className="text-blue-900 text-lg max-w-2xl mx-auto">
+            Stay updated with the latest announcements, notifications, and
+            important information from BAESA
+          </p>
+        </div>
+      </div>
+
+      
 
 
       {/* Main Content */}
@@ -167,7 +168,7 @@ export default function NoticePage() {
 
         {/* Notices Grid */}
         {!loading && notices.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1  gap-6">
             {notices.map((notice, index) => (
               <div
                 key={notice.id || index}
@@ -201,15 +202,17 @@ export default function NoticePage() {
                       <span>{formatDate(notice.createdAt)}</span>
                     </div>
                   )}
-
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                    {truncateText(notice.body, 180)}
+<div className="flex flex-col md:flex-row  md:gap-10 justify-between md:items-center">
+ <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                    {truncateText(notice.body, 150)}
                   </p>
 
-                  <div className="flex items-center gap-1 text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all">
+                  <div className="flex items-center gap-1 text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all flex-shrink-0">
                     <span>Read Full Notice</span>
                     <ChevronRight className="w-4 h-4" />
                   </div>
+</div>
+                 
                 </div>
               </div>
             ))}

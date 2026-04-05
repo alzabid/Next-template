@@ -24,6 +24,16 @@
       "key": "noticeId",
       "value": "",
       "type": "string"
+    },
+    {
+      "key": "eventId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventSlug",
+      "value": "bapsa-picnic-2026",
+      "type": "string"
     }
   ],
   "item": [
@@ -422,6 +432,153 @@
               "raw": "{{baseUrl}}/notice/{{noticeId}}",
               "host": ["{{baseUrl}}"],
               "path": ["notice", "{{noticeId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Event",
+      "item": [
+        {
+          "name": "[Public] Get Published Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/event",
+              "host": ["{{baseUrl}}"],
+              "path": ["event"]
+            }
+          }
+        },
+        {
+          "name": "[Public] Get Event by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/event/slug/{{eventSlug}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "slug", "{{eventSlug}}"]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/admin/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "admin", "all"]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Get Event by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/admin/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "admin", "{{eventId}}"]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Create Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.id) {",
+                  "  pm.collectionVariables.set('eventId', res.data.id);",
+                  "}",
+                  "if (res.data && res.data.slug) {",
+                  "  pm.collectionVariables.set('eventSlug', res.data.slug);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"বাপসা পিকনিক-২০২৬\",\n  \"slug\": \"bapsa-picnic-2026\",\n  \"bannerImage\": \"https://github.com/alzabid/Next-template/blob/main/public/picnic.jpg?raw=true\",\n  \"greeting\": \"সুধী,\\n\\nআসসালামু আলাইকুম ও শুভেচ্ছা।\",\n  \"bodyText\": \"বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংঘ (বাপসা)-এর উদ্যোগে আগামী ০৭ ফেব্রুয়ারি ২০২৬ খ্রি. শেলটন রিসোর্ট অ্যান্ড কনভেনশন সেন্টার, গাজীপুর-এ বাপসা পিকনিক-২০২৬ আয়োজন করা হয়েছে। উক্ত আয়োজনে বাংলাদেশ পরমাণু শক্তি কমিশনে কর্মরত সকলের বিজ্ঞানীবৃন্দ ও তাদের পরিবারবর্গ অংশগ্রহণ করবেন।\\n\\nবাপসা পিকনিক-২০২৬-এর এই আনন্দঘন আয়োজনে আপনাকে সপরিবারে অংশগ্রহণের জন্য বিশেষভাবে আমন্ত্রণ জানাচ্ছি। আপনার সান্নিধ্য উপস্থিতি আমাদের আয়োজনকে সার্থক এবং সকলকে অনুপ্রাণিত করবে।\",\n  \"closingText\": \"বিনীত,\",\n  \"eventDate\": \"০৭ ফেব্রুয়ারি ২০২৬\",\n  \"venue\": \"শেলটন রিসোর্ট অ্যান্ড কনভেনশন সেন্টার\",\n  \"venueAddress\": \"গাজীপুর\",\n  \"schedule\": [\n    { \"activity\": \"ঢাকা থেকে যাত্রা\", \"time\": \"সকাল ৭.৩০ মিনিট\" },\n    { \"activity\": \"রিসোর্টে উপস্থিতি\", \"time\": \"সকাল ৮.৩০ মিনিট\" },\n    { \"activity\": \"নাস্তা\", \"time\": \"সকাল ৮.৩০ – ৯.৩০ মিনিট\" },\n    { \"activity\": \"ইভেন্টসমূহ\", \"time\": \"সকাল ১০.০০ – দুপুর ১.৩০টা\" },\n    { \"activity\": \"মধ্যাহ্ন ভোজ\", \"time\": \"দুপুর ১.৩০ – ২.৩০টা\" },\n    { \"activity\": \"চা/কফি\", \"time\": \"দিনব্যাপী\" },\n    { \"activity\": \"সাংস্কৃতিক অনুষ্ঠান ও রাফেল ড্র\", \"time\": \"বিকাল ৩.০০ – ৫.০০টা\" }\n  ],\n  \"contactPersons\": [\n    { \"name\": \"ড. মোঃ গোলাম রসুল\", \"designation\": \"সাধারণ সম্পাদক\", \"mobile\": \"০১৯১১১৬১৯২২\" },\n    { \"name\": \"ড. একেএম সাইফুল্লাহ\", \"designation\": \"সহসভাপতি\", \"mobile\": \"০১৯১১৬৯৭৬৩৬\" }\n  ],\n  \"featuredTitle\": \"Lucky Draw & Lottery\",\n  \"featuredSubtitle\": \"Special Program\",\n  \"featuredDescription\": \"Get ready for the most exciting part of the day! Our special lucky draw and lottery program offers amazing prizes for all participants. Every registered attendee will automatically receive a lottery ticket upon arrival.\",\n  \"featuredImage\": \"https://github.com/alzabid/Next-template/blob/main/public/lottery.jpg?raw=true\",\n  \"featuredItems\": [\n    { \"title\": \"Grand Prize\", \"description\": \"Smart TV, Refrigerator, and other home appliances\" },\n    { \"title\": \"2nd & 3rd Prize\", \"description\": \"Smartphones, tablets, and electronic gadgets\" },\n    { \"title\": \"Multiple Winners\", \"description\": \"50+ consolation prizes including gift vouchers and hampers\" }\n  ],\n  \"featuredHighlightTitle\": \"🎫 Lottery Draw Time: 3:00 PM - 4:00 PM\",\n  \"featuredHighlightText\": \"Don't miss this exciting opportunity! Be present during the draw to claim your prize.\",\n  \"ctaTitle\": \"Ready to Join Us?\",\n  \"ctaSubtitle\": \"Register now to confirm your spot and receive your lottery ticket!\",\n  \"ctaButtonText\": \"Register Now\",\n  \"organizationName\": \"বাংলাদেশ পরমাণু শক্তি বিজ্ঞানী সংস (বায়েসা)\",\n  \"isPublished\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event",
+              "host": ["{{baseUrl}}"],
+              "path": ["event"]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"বাপসা পিকনিক-২০২৬ (আপডেটেড)\",\n  \"isPublished\": true,\n  \"schedule\": [\n    { \"activity\": \"ঢাকা থেকে যাত্রা\", \"time\": \"সকাল ৮.০০ মিনিট\" },\n    { \"activity\": \"রিসোর্টে উপস্থিতি\", \"time\": \"সকাল ৯.০০ মিনিট\" }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/event/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "{{eventId}}"]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/event/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["event", "{{eventId}}"]
             }
           }
         }
