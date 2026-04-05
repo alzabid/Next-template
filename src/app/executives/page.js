@@ -33,7 +33,7 @@ export default function ExecutivesPage() {
       position: "কোষাধ্যক্ষ",
       positionEn: "Treasurer",
       image:
-        "https://scontent-sin6-1.xx.fbcdn.net/v/t39.30808-6/504433381_10237949971906332_7491224736133767266_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=TB5QCyrCIygQ7kNvwFd4DZq&_nc_oc=Adm98LEI2ogAx3bg0G1nDExUBpR-F6Q6dd6l8MMeDNHe7cMANUuPaxGRKayYL96NpcLzSL-idXm9NGkb9yWUu5Bc&_nc_zt=23&_nc_ht=scontent-sin6-1.xx&_nc_gid=MNS05BYhsof66WCSTnmDjA&oh=00_AfqH94l2XCjGkaZQ3lHFPUXoeeJQ7y4S_lDX8PQujAkyhQ&oe=697D4DE7",
+        "https://cdn.shopify.com/s/files/1/0741/4480/9131/files/504433381_10237949971906332_7491224736133767266_n.jpg?v=1775380441",
       email: "mahbub405@yahoo.com",
       phone: "+880-XXX-XXXXXX",
       department: "Chief Scientific Officer, Atomic Energy Centre, Dhaka",
@@ -44,7 +44,7 @@ export default function ExecutivesPage() {
       position: "সাধারণ সম্পাদক",
       positionEn: "General Secretary",
       image:
-        "https://baec.org.bd/uploads/images/researchers/1762404683_cropped_image.png",
+        "https://cdn.shopify.com/s/files/1/0741/4480/9131/files/WhatsApp_Image_2026-04-05_at_3.02.19_PM.jpg?v=1775380163",
       email: "grasulgeo@yahoo.com",
       phone: "+880-XXX-XXXXXX",
       department:
@@ -127,7 +127,8 @@ export default function ExecutivesPage() {
       department:
         "Principal Medical Officer, Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
       email: "azmalbaec@gmail.com",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
+      image:
+        "https://cdn.shopify.com/s/files/1/0741/4480/9131/files/WhatsApp_Image_2026-04-05_at_3.02.18_PM.jpg?v=1775380164",
     },
     {
       id: 12,

@@ -17,6 +17,7 @@ import {
   Clock,
   Shield,
   Bell,
+  CalendarDays,
 } from "lucide-react";
 
 const sidebarLinks = [
@@ -35,6 +36,20 @@ const sidebarLinks = [
     color: "violet",
   },
   {
+    href: "/dashboard/notice",
+    label: "Notices",
+    icon: Bell,
+    description: "Manage notices",
+    color: "amber",
+  },
+  {
+    href: "/dashboard/events",
+    label: "Events",
+    icon: CalendarDays,
+    description: "Manage events",
+    color: "rose",
+  },
+  {
     href: "/dashboard/profile",
     label: "My Profile",
     icon: User,
@@ -46,18 +61,24 @@ const sidebarLinks = [
 const activeColors = {
   blue: "from-blue-500/20 to-blue-600/5 border-blue-500/30 text-blue-400",
   violet: "from-violet-500/20 to-violet-600/5 border-violet-500/30 text-violet-400",
+  amber: "from-amber-500/20 to-amber-600/5 border-amber-500/30 text-amber-400",
+  rose: "from-rose-500/20 to-rose-600/5 border-rose-500/30 text-rose-400",
   emerald: "from-emerald-500/20 to-emerald-600/5 border-emerald-500/30 text-emerald-400",
 };
 
 const activeIconBg = {
   blue: "bg-blue-500/20 text-blue-400 shadow-blue-500/10",
   violet: "bg-violet-500/20 text-violet-400 shadow-violet-500/10",
+  amber: "bg-amber-500/20 text-amber-400 shadow-amber-500/10",
+  rose: "bg-rose-500/20 text-rose-400 shadow-rose-500/10",
   emerald: "bg-emerald-500/20 text-emerald-400 shadow-emerald-500/10",
 };
 
 const activeBar = {
   blue: "from-blue-400 to-blue-600",
   violet: "from-violet-400 to-violet-600",
+  amber: "from-amber-400 to-amber-600",
+  rose: "from-rose-400 to-rose-600",
   emerald: "from-emerald-400 to-emerald-600",
 };
 
