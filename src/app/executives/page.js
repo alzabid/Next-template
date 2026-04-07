@@ -232,7 +232,7 @@ export default function ExecutivesPage() {
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-t-4 border-blue-600 group"
             >
               {/* Profile Image */}
-              <div className="relative h-80 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
+              <div className="relative h-[430px] bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
                 <img
                   src={executive.image}
                   alt={executive.nameEn}
