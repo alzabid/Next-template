@@ -200,6 +200,41 @@ export async function deleteEvent(id) {
   return data;
 }
 
+// ─── Member API ───────────────────────────────────────────
+export async function getMembers(category) {
+  const query = category ? `?category=${category}` : "";
+  const data = await request(`/member${query}`);
+  return data;
+}
+
+export async function getMember(id) {
+  const data = await request(`/member/${id}`);
+  return data;
+}
+
+export async function createMember(payload) {
+  const data = await request("/member", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return data;
+}
+
+export async function updateMember(id, payload) {
+  const data = await request(`/member/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+  return data;
+}
+
+export async function deleteMember(id) {
+  const data = await request(`/member/${id}`, {
+    method: "DELETE",
+  });
+  return data;
+}
+
 // ─── ImageBB Upload ───────────────────────────────────────
 export async function uploadToImageBB(file) {
   const formData = new FormData();
@@ -210,7 +245,7 @@ export async function uploadToImageBB(file) {
     {
       method: "POST",
       body: formData,
-    }
+    },
   );
 
   const data = await res.json();

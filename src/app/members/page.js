@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Mail,
@@ -10,90 +10,28 @@ import {
   MailCheck,
 } from "lucide-react";
 
+import { getMembers } from "@/lib/api";
+
 export default function MembersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Sample members data
-  const members = [
-    {
-      id: 1,
-      name: "Dr. Md. Asad Shariff",
-      title: "Director & Chief Scientific Officer",
-      department: "Bangladesh Atomic Energy Commission",
-      email: "asad_shariff_roni@yahoo.com",
-      joinYear: "2024",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1757845365_cropped_image.png",
-    },
-    {
-      id: 2,
-      name: "Dr. Afroja Sultana",
-      title: "Medical Officer",
-      department: "National Institute of Nuclear Medicine & Allied Sciences",
-      email: "afrojasultanashukhi@gmail.com",
-      joinYear: "2024",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 3,
-      name: "Dr. Mohammad Rajib",
-      title: "Principal Geologist",
-      department: "Institute of Nuclear Geological Sciences",
-      email: "rajib.mohammad@gmail.com",
-      joinYear: "2024",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1763444837_cropped_image.png",
-    },
-    {
-      id: 4,
-      name: "Dr. Md. Abdullah Al Mamun",
-      title: "Principal Scientific Officer",
-      department: "Atomic Energy Centre, Dhaka",
-      email: "mamun.aec@baec.gov.bd",
-      joinYear: "2016",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1765797505_cropped_image.png",
-    },
-    {
-      id: 5,
-      name: "Dr. Azmal Kabir Sarker",
-      title: "Principal Medical Officer",
-      department: "Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
-      email: "azmalbaec@gmail.com",
-      joinYear: "2016",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 6,
-      name: "Mr. Md. Mosharraf Hosain",
-      title: "Scientific Officer",
-      department: "Institute of Food and Radiation Biology",
-      email: "mosharrafjnu722@gmaiI.com",
-      joinYear: "2014",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 7,
-      name: "Mr. Md. Aliuzzaman",
-      title: "Principal Scientific Officer",
-      department:
-        "Bangladesh Atomic Energy Commission",
-      email: "palash.eng07@gmail.com",
-      joinYear: "2014",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 8,
-      name: "Dr. Ayesha Siddiqua",
-      title: "Principal Scientist",
-      department: "Nuclear Agriculture",
-      email: "dr.siddiqua@baesa.org.bd",
-      joinYear: "2024",
-      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
-    },
-  ];
+  useEffect(() => {
+    const fetchMembersData = async () => {
+      try {
+        const res = await getMembers("MEMBER");
+        setMembers(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch members:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMembersData();
+  }, []);
 
   const departments = [
     "Select Institute",
@@ -112,14 +50,14 @@ export default function MembersPage() {
     const matchesDepartment =
       selectedDepartment === "All" || member.department === selectedDepartment;
     const matchesYear =
-      selectedYear === "All" || member.joinYear === selectedYear;
+      selectedYear === "All" || member.year === selectedYear;
     return matchesSearch && matchesDepartment && matchesYear;
   });
 
   const memberStats = {
     total: members.length,
     departments: [...new Set(members.map((m) => m.department))].length,
-    years: [...new Set(members.map((m) => m.joinYear))].length,
+    years: [...new Set(members.map((m) => m.year))].length,
   };
 
   return (
@@ -245,6 +183,11 @@ export default function MembersPage() {
         </div>
 
         {/* Members Grid */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredMembers.map((member) => (
             <div
@@ -269,7 +212,7 @@ export default function MembersPage() {
                   {member.name}
                 </h3>
                 <p className="text-sm text-blue-600 font-semibold mb-3">
-                  {member.title}
+                  {member.titleEn} {member.titleBn && `(${member.titleBn})`}
                 </p>
 
                 <div className="space-y-2 mb-4">
@@ -295,6 +238,7 @@ export default function MembersPage() {
             </div>
           ))}
         </div>
+        )}
 
         {/* No Results Message */}
         {filteredMembers.length === 0 && (

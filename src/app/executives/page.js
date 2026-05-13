@@ -1,157 +1,26 @@
-import { Mail, Phone, Award, Users, Landmark, User } from "lucide-react";
+"use client";
+import { useState, useEffect } from "react";
+import { Mail, Phone, Award, Users, Landmark, User, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { getMembers } from "@/lib/api";
 
 export default function ExecutivesPage() {
-  // Executive members data
-  const executives = [
-    {
-      id: 1,
-      name: "Dr. A.S.M. Saifullah",
-      position: "সভাপতি",
-      positionEn: "President",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1757678025_cropped_image.png",
-      email: "saif_13@yahoo.com",
-      phone: "+880-XXX-XXXXXX",
-      department: "Director General, Atomic Energy Research Establishment",
-    },
-    {
-      id: 2,
+  const [executives, setExecutives] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-      name: "Dr. Md. Abu Bakker Siddique",
-      position: "সহ-সভাপতি",
-      positionEn: "Vice President",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-      email: " siddiquemukta2013@gmail.com",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Chief Medical Officer, National Institute of Nuclear Medicine & Allied Sciences",
-    },
-    {
-      id: 3,
-      name: "Dr. Md. Mahbubul Haque",
-      position: "কোষাধ্যক্ষ",
-      positionEn: "Treasurer",
-      image:
-        "https://cdn.shopify.com/s/files/1/0741/4480/9131/files/504433381_10237949971906332_7491224736133767266_n.jpg?v=1775380441",
-      email: "mahbub405@yahoo.com",
-      phone: "+880-XXX-XXXXXX",
-      department: "Chief Scientific Officer, Atomic Energy Centre, Dhaka",
-    },
-    {
-      id: 4,
-      name: "Dr. Md. Golam Rasul",
-      position: "সাধারণ সম্পাদক",
-      positionEn: "General Secretary",
-      image:
-        "https://cdn.shopify.com/s/files/1/0741/4480/9131/files/WhatsApp_Image_2026-04-05_at_3.02.19_PM.jpg?v=1775380163",
-      email: "grasulgeo@yahoo.com",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Director & Chief Geologist, Institute of Nuclear Geological Sciences",
-    },
-    {
-      id: 5,
-      name: "Dr. Md. Firoz Mortuza",
-      position: "সহ-সাধারণ সম্পাদক",
-      positionEn: "Joint Secretary",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-      email: "firozmortuza@gmail.com",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Principal Scientific Officer, Institute of Food and Radiation Biology",
-    },
-    {
-      id: 6,
-      name: "Engr. Md. Al Mamun",
-      position: "তথ্য ও প্রকাশনা সম্পাদক",
-      positionEn: "Information & Publication Secretary",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-      email: "mamun7891@gmail.com",
-      phone: "+880-XXX-XXXXXX",
-      department: "Principal Engineer, Bangladesh Atomic Energy Commission",
-    },
-    {
-      id: 7,
-      name: "Dr. Md. Asad Shariff",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Director & Chief Scientific Officer, Bangladesh Atomic Energy Commission",
-      email: "asad_shariff_roni@yahoo.com",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1757845365_cropped_image.png",
-    },
-    {
-      id: 8,
-      name: "Dr. Afroja Sultana",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Medical Officer, National Institute of Nuclear Medicine & Allied Sciences",
-      email: "afrojasultanashukhi@gmail.com",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 9,
-      name: "Dr. Mohammad Rajib",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Principal Geologist, Institute of Nuclear Geological Sciences",
-      email: "rajib.mohammad@gmail.com",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1763444837_cropped_image.png",
-    },
-    {
-      id: 10,
-      name: "Dr. Md. Abdullah Al Mamun",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      department: "Principal Scientific Officer, Atomic Energy Centre, Dhaka",
-      email: "mamun.aec@baec.gov.bd",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1765797505_cropped_image.png",
-    },
-    {
-      id: 11,
-      name: "Dr. Azmal Kabir Sarker",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      title: "",
-      department:
-        "Principal Medical Officer, Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
-      email: "azmalbaec@gmail.com",
-      image:
-        "https://cdn.shopify.com/s/files/1/0741/4480/9131/files/WhatsApp_Image_2026-04-05_at_3.02.18_PM.jpg?v=1775380164",
-    },
-    {
-      id: 12,
-      name: "Mr. Md. Mosharraf Hosain",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      department: "Scientific Officer, Institute of Food and Radiation Biology",
-      email: "mosharrafjnu722@gmaiI.com",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 13,
-      name: "Mr. Md. Aliuzzaman",
-      position: "পরিষদ সদস্য",
-      positionEn: "Council Member",
-      phone: "+880-XXX-XXXXXX",
-      department:
-        "Principal Scientific Officer, Bangladesh Atomic Energy Commission",
-      email: "palash.eng07@gmail.com",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-  ];
+  useEffect(() => {
+    const fetchExecutives = async () => {
+      try {
+        const res = await getMembers("EXECUTIVE");
+        setExecutives(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch executives:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchExecutives();
+  }, []);
 
   // Statistics
   const stats = [
@@ -224,7 +93,11 @@ export default function ExecutivesPage() {
           </p>
         </div> */}
 
-        {/* Executives Grid */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {executives.map((executive) => (
             <div
@@ -260,7 +133,7 @@ export default function ExecutivesPage() {
                   {executive.name}
                 </h3>
                 <p className="text-gray-600 text-center mb-4 font-medium">
-                  {executive.positionEn} ({executive.position})
+                  {executive.titleEn} {executive.titleBn && `(${executive.titleBn})`}
                 </p>
 
                 <div className="border-t border-gray-200 pt-4 space-y-3">
@@ -314,6 +187,7 @@ export default function ExecutivesPage() {
             </div>
           ))}
         </div>
+        )}
       </div>
 
       {/* Message Section */}

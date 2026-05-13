@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Image as ImageIcon,
   User,
+  Users,
   LogOut,
   Menu,
   X,
@@ -55,6 +56,13 @@ const sidebarLinks = [
     icon: User,
     description: "Account info",
     color: "emerald",
+  },
+  {
+    href: "/dashboard/members",
+    label: "Members",
+    icon: Users,
+    description: "Manage members",
+    color: "blue",
   },
 ];
 
