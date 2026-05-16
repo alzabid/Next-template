@@ -11,7 +11,19 @@ import {
   FileText,
   Volume2,
   Eye,
+  AlertCircle,
 } from "lucide-react";
+import dynamic from 'next/dynamic';
+
+const PdfViewer = dynamic(() => import('./PdfViewer'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col items-center justify-center py-20 text-blue-500">
+      <Loader2 className="w-8 h-8 animate-spin mb-4" />
+      <p>Loading PDF Viewer...</p>
+    </div>
+  )
+});
 
 export default function NoticePage() {
   const [notices, setNotices] = useState([]);
@@ -19,10 +31,22 @@ export default function NoticePage() {
   const [selectedNotice, setSelectedNotice] = useState(null);
   const [loadingNoticeId, setLoadingNoticeId] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [numPages, setNumPages] = useState(null);
+  const [pdfWidth, setPdfWidth] = useState(null);
 
   useEffect(() => {
     fetchNotices();
+    const handleResize = () => {
+      setPdfWidth(window.innerWidth < 768 ? window.innerWidth - 64 : 800);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }
 
   const handleNoticeClick = async (notice) => {
     setLoadingNoticeId(notice.id);
@@ -303,30 +327,16 @@ export default function NoticePage() {
 
               {/* PDF Viewer */}
               {selectedNotice.pdfUrl && (
-                <div className="w-full mt-4 border border-gray-200 rounded-xl overflow-hidden bg-gray-100">
-                  <object
-                    data={selectedNotice.pdfUrl}
-                    type="application/pdf"
-                    className="w-full h-[75vh]"
-                  >
-                    <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gray-50">
-                      <FileText className="w-16 h-16 text-blue-300 mb-4" />
-                      <p className="text-gray-800 font-semibold mb-2 text-lg">
-                        PDF Viewer Not Supported
-                      </p>
-                      <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                        Your browser doesn&apos;t support inline PDF viewing.
-                        Please download the file to view it.
-                      </p>
-                      <a
-                        href={selectedNotice.pdfUrl}
-                        download={`notice-${selectedNotice.id || "document"}.pdf`}
-                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors shadow-lg shadow-blue-500/20"
-                      >
-                        Download PDF Document
-                      </a>
-                    </div>
-                  </object>
+                <div className="w-full mt-4 border border-gray-200 rounded-xl overflow-hidden bg-gray-100 flex flex-col h-[75vh]">
+                  <div className="flex-1 overflow-y-auto p-4 flex justify-center bg-gray-200">
+                    <PdfViewer 
+                      url={selectedNotice.pdfUrl}
+                      noticeId={selectedNotice.id}
+                      numPages={numPages}
+                      onDocumentLoadSuccess={onDocumentLoadSuccess}
+                      pdfWidth={pdfWidth}
+                    />
+                  </div>
                 </div>
               )}
 
