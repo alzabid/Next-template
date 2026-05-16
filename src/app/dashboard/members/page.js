@@ -23,6 +23,7 @@ export default function MemberManagement() {
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [filterCategory, setFilterCategory] = useState("ALL");
   const [deleteModal, setDeleteModal] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState(null);
@@ -49,17 +50,18 @@ export default function MemberManagement() {
   }, []);
 
   useEffect(() => {
-    if (search.trim()) {
-      setFilteredItems(
-        items.filter((item) =>
-          item.name.toLowerCase().includes(search.toLowerCase()) || 
-          item.email.toLowerCase().includes(search.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredItems(items);
+    let result = items;
+    if (filterCategory !== "ALL") {
+      result = result.filter(item => item.category === filterCategory);
     }
-  }, [search, items]);
+    if (search.trim()) {
+      result = result.filter((item) =>
+        item.name.toLowerCase().includes(search.toLowerCase()) || 
+        item.email.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+    setFilteredItems(result);
+  }, [search, items, filterCategory]);
 
   const fetchItems = async () => {
     try {
@@ -466,23 +468,36 @@ export default function MemberManagement() {
 
       {/* Search Bar */}
       <div className="bg-white rounded-xl border border-slate-200 p-4">
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or email..."
-            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
-          />
-          {search && (
-            <button
-              onClick={() => setSearch("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name or email..."
+              className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          <div className="w-full sm:w-48">
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
             >
-              <X className="w-4 h-4" />
-            </button>
-          )}
+              <option value="ALL">All Categories</option>
+              <option value="EXECUTIVE">Executives</option>
+              <option value="MEMBER">Members</option>
+            </select>
+          </div>
         </div>
         <p className="text-xs text-slate-400 mt-2">
           {filteredItems.length} member{filteredItems.length !== 1 ? "s" : ""}{" "}

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getNotices } from "@/lib/api";
+import { getNotices, getNotice } from "@/lib/api";
 import {
   Megaphone,
   Calendar,
@@ -10,17 +10,32 @@ import {
   Bell,
   FileText,
   Volume2,
+  Eye,
 } from "lucide-react";
 
 export default function NoticePage() {
   const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedNotice, setSelectedNotice] = useState(null);
+  const [loadingNoticeId, setLoadingNoticeId] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     fetchNotices();
   }, []);
+
+  const handleNoticeClick = async (notice) => {
+    setLoadingNoticeId(notice.id);
+    try {
+      const res = await getNotice(notice.id);
+      setSelectedNotice(res.data);
+    } catch {
+      // Fallback if full fetch fails
+      setSelectedNotice(notice);
+    } finally {
+      setLoadingNoticeId(null);
+    }
+  };
 
   const fetchNotices = async () => {
     try {
@@ -53,61 +68,65 @@ export default function NoticePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       {/* Marquee Ticker */}
-        <div className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 overflow-hidden shadow-lg">
-          {/* Decorative elements */}
-          <div className="absolute inset-0 opacity-10">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  "radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0)",
-                backgroundSize: "32px 32px",
-              }}
-            />
+      <div className="relative bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 overflow-hidden shadow-lg">
+        {/* Decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0)",
+              backgroundSize: "32px 32px",
+            }}
+          />
+        </div>
+
+        <div className="relative flex items-center">
+          {/* Label */}
+          <div className="flex-shrink-0 bg-gradient-to-r from-yellow-500 to-amber-500 px-5 py-3 flex items-center gap-2 z-10 shadow-lg">
+            <Volume2 className="w-4 h-4 text-white animate-pulse" />
+            <span className="text-white text-sm font-bold uppercase tracking-wider whitespace-nowrap">
+              Latest
+            </span>
           </div>
 
-          <div className="relative flex items-center">
-            {/* Label */}
-            <div className="flex-shrink-0 bg-gradient-to-r from-yellow-500 to-amber-500 px-5 py-3 flex items-center gap-2 z-10 shadow-lg">
-              <Volume2 className="w-4 h-4 text-white animate-pulse" />
-              <span className="text-white text-sm font-bold uppercase tracking-wider whitespace-nowrap">
-                Latest
-              </span>
-            </div>
-
-            {/* Scrolling content */}
+          {/* Scrolling content */}
+          <div
+            className="overflow-hidden flex-1 py-3"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
             <div
-              className="overflow-hidden flex-1 py-3"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
+              className="whitespace-nowrap"
+              style={{
+                animation: `marquee ${Math.max(notices.length * 8, 20)}s linear infinite`,
+                animationPlayState: isPaused ? "paused" : "running",
+              }}
             >
-              <div
-                className="whitespace-nowrap"
-                style={{
-                  animation: `marquee ${Math.max(notices.length * 8, 20)}s linear infinite`,
-                  animationPlayState: isPaused ? "paused" : "running",
-                }}
-              >
-                {notices.map((notice, index) => (
-                  <span key={notice.id || index} className="inline-flex items-center mx-8">
-                    <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 flex-shrink-0" />
-                    <button
-                      onClick={() => setSelectedNotice(notice)}
-                      className="text-white/90 hover:text-yellow-300 text-sm font-medium transition-colors cursor-pointer"
-                    >
-                      {notice.title}
-                    </button>
-                    {notice.createdAt && (
-                      <span className="text-blue-100 text-xs ml-3">
-                        ({formatDate(notice.createdAt)})
-                      </span>
-                    )}
-                  </span>
-                ))}
-              </div>
+              {notices.map((notice, index) => (
+                <span
+                  key={notice.id || index}
+                  className="inline-flex items-center mx-8"
+                >
+                  <span className="w-2 h-2 bg-yellow-400 rounded-full mr-3 flex-shrink-0" />
+                  <button
+                    onClick={() => handleNoticeClick(notice)}
+                    disabled={loadingNoticeId === notice.id}
+                    className="text-white/90 hover:text-yellow-300 text-sm font-medium transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {notice.title}
+                  </button>
+                  {notice.createdAt && (
+                    <span className="text-blue-100 text-xs ml-3">
+                      ({formatDate(notice.createdAt)})
+                    </span>
+                  )}
+                </span>
+              ))}
             </div>
           </div>
         </div>
+      </div>
       {/* Page Header */}
       <div className="text-blue-800 py-16">
         <div className="text-center max-w-7xl mx-auto px-4">
@@ -123,9 +142,6 @@ export default function NoticePage() {
           </p>
         </div>
       </div>
-
-      
-
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-10">
@@ -166,56 +182,56 @@ export default function NoticePage() {
           </div>
         )}
 
-        {/* Notices Grid */}
+        {/* Notices Grid -> Redesigned as Tabular List */}
         {!loading && notices.length > 0 && (
-          <div className="grid grid-cols-1  gap-6">
-            {notices.map((notice, index) => (
-              <div
-                key={notice.id || index}
-                onClick={() => setSelectedNotice(notice)}
-                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border-t-4 border-blue-600 group cursor-pointer"
-                style={{
-                  animation: `slideUp 0.5s ease-out ${index * 0.1}s both`,
-                }}
-              >
-                {/* Card Header */}
-                <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 px-6 py-4 border-b border-blue-100">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 min-w-0">
-                      <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-blue-700 transition-colors shadow-sm">
-                        <Megaphone className="w-5 h-5 text-white" />
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">
-                          {notice.title}
-                        </h3>
-                      </div>
-                    </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            {/* Table Header (Desktop) */}
+            <div className="hidden md:grid grid-cols-12 gap-4 bg-slate-50 border-b border-slate-200 px-6 py-4 text-sm font-bold text-slate-700 uppercase tracking-wider">
+              <div className="col-span-2">Date</div>
+              <div className="col-span-8">Title</div>
+              <div className="col-span-2 text-right">Action</div>
+            </div>
+
+            {/* Table Body */}
+            <div className="divide-y divide-slate-100">
+              {notices.map((notice, index) => (
+                <div
+                  key={notice.id || index}
+                  onClick={() => handleNoticeClick(notice)}
+                  className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-blue-50/50 transition-colors cursor-pointer group items-center relative"
+                  style={{
+                    animation: `slideUp 0.3s ease-out ${index * 0.05}s both`,
+                  }}
+                >
+                  {/* Date Column */}
+                  <div className="md:col-span-2 flex items-center gap-2 text-sm text-slate-600">
+                    <Calendar className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    <span className="font-medium whitespace-nowrap">
+                      {formatDate(notice.createdAt)}
+                    </span>
+                  </div>
+
+                  {/* Title Column */}
+                  <div className="md:col-span-8">
+                    <h3 className="text-base font-semibold text-slate-800 group-hover:text-blue-700 transition-colors leading-snug pr-4">
+                      {notice.title}
+                    </h3>
+                  </div>
+
+                  {/* Action Column */}
+                  <div className="md:col-span-2 flex justify-start md:justify-end mt-2 md:mt-0">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 bg-blue-100 px-4 py-2 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                      {loadingNoticeId === notice.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                      View Notice
+                    </span>
                   </div>
                 </div>
-
-                {/* Card Body */}
-                <div className="p-6">
-                  {notice.createdAt && (
-                    <div className="flex items-center gap-2 text-sm text-blue-600 font-medium mb-4">
-                      <Calendar className="w-4 h-4" />
-                      <span>{formatDate(notice.createdAt)}</span>
-                    </div>
-                  )}
-<div className="flex flex-col md:flex-row  md:gap-10 justify-between md:items-center">
- <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                    {truncateText(notice.body, 150)}
-                  </p>
-
-                  <div className="flex items-center gap-1 text-blue-600 text-sm font-semibold group-hover:gap-2 transition-all flex-shrink-0">
-                    <span>Read Full Notice</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </div>
-</div>
-                 
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -227,7 +243,7 @@ export default function NoticePage() {
           onClick={() => setSelectedNotice(null)}
         >
           <div
-            className="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden shadow-2xl"
+            className="bg-white rounded-2xl w-[90vw] md:max-w-6xl max-h-[95vh] flex flex-col overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: "fadeIn 0.3s ease-out" }}
           >
@@ -263,25 +279,56 @@ export default function NoticePage() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 overflow-y-auto max-h-[calc(85vh-180px)]">
+            <div className="p-6 overflow-y-auto flex-1">
               {/* Date Badge */}
-              {selectedNotice.createdAt && (
+              {/* {selectedNotice.createdAt && (
                 <div className="flex items-center gap-2 mb-6">
                   <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium px-4 py-2 rounded-lg border border-blue-100">
                     <Calendar className="w-4 h-4" />
-                    <span>Published on {formatDate(selectedNotice.createdAt)}</span>
+                    <span>
+                      Published on {formatDate(selectedNotice.createdAt)}
+                    </span>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Notice Content */}
-              <div className="prose prose-slate max-w-none">
-                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-100">
+              {/* <div className="prose prose-slate max-w-none">
+                <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl p-6 border border-gray-100 mb-6">
                   <p className="text-gray-700 text-base leading-relaxed whitespace-pre-wrap">
                     {selectedNotice.body}
                   </p>
                 </div>
-              </div>
+              </div> */}
+
+              {/* PDF Viewer */}
+              {selectedNotice.pdfUrl && (
+                <div className="w-full mt-4 border border-gray-200 rounded-xl overflow-hidden bg-gray-100">
+                  <object
+                    data={selectedNotice.pdfUrl}
+                    type="application/pdf"
+                    className="w-full h-[75vh]"
+                  >
+                    <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-gray-50">
+                      <FileText className="w-16 h-16 text-blue-300 mb-4" />
+                      <p className="text-gray-800 font-semibold mb-2 text-lg">
+                        PDF Viewer Not Supported
+                      </p>
+                      <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                        Your browser doesn&apos;t support inline PDF viewing.
+                        Please download the file to view it.
+                      </p>
+                      <a
+                        href={selectedNotice.pdfUrl}
+                        download={`notice-${selectedNotice.id || "document"}.pdf`}
+                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors shadow-lg shadow-blue-500/20"
+                      >
+                        Download PDF Document
+                      </a>
+                    </div>
+                  </object>
+                </div>
+              )}
 
               {/* Footer */}
               <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">

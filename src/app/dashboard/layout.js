@@ -30,6 +30,13 @@ const sidebarLinks = [
     color: "blue",
   },
   {
+    href: "/dashboard/members",
+    label: "Members",
+    icon: Users,
+    description: "Manage members",
+    color: "blue",
+  },
+  {
     href: "/dashboard/gallery",
     label: "Gallery",
     icon: ImageIcon,
@@ -57,21 +64,16 @@ const sidebarLinks = [
     description: "Account info",
     color: "emerald",
   },
-  {
-    href: "/dashboard/members",
-    label: "Members",
-    icon: Users,
-    description: "Manage members",
-    color: "blue",
-  },
 ];
 
 const activeColors = {
   blue: "from-blue-500/20 to-blue-600/5 border-blue-500/30 text-blue-400",
-  violet: "from-violet-500/20 to-violet-600/5 border-violet-500/30 text-violet-400",
+  violet:
+    "from-violet-500/20 to-violet-600/5 border-violet-500/30 text-violet-400",
   amber: "from-amber-500/20 to-amber-600/5 border-amber-500/30 text-amber-400",
   rose: "from-rose-500/20 to-rose-600/5 border-rose-500/30 text-rose-400",
-  emerald: "from-emerald-500/20 to-emerald-600/5 border-emerald-500/30 text-emerald-400",
+  emerald:
+    "from-emerald-500/20 to-emerald-600/5 border-emerald-500/30 text-emerald-400",
 };
 
 const activeIconBg = {
@@ -113,14 +115,14 @@ export default function DashboardLayout({ children }) {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true,
-        })
+        }),
       );
       setCurrentDate(
         now.toLocaleDateString("en-US", {
           weekday: "short",
           month: "short",
           day: "numeric",
-        })
+        }),
       );
     };
     tick();
@@ -246,7 +248,9 @@ export default function DashboardLayout({ children }) {
 
           {/* ── Date/Time ── */}
           <div className="px-6 py-3 flex items-center justify-between flex-shrink-0">
-            <span className="text-[11px] text-slate-500 font-medium">{currentDate}</span>
+            <span className="text-[11px] text-slate-500 font-medium">
+              {currentDate}
+            </span>
             <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
               <Clock className="w-3 h-3" />
               {currentTime}
@@ -376,7 +380,7 @@ export default function DashboardLayout({ children }) {
                 {sidebarLinks.find(
                   (l) =>
                     pathname === l.href ||
-                    (l.href !== "/dashboard" && pathname.startsWith(l.href))
+                    (l.href !== "/dashboard" && pathname.startsWith(l.href)),
                 )?.label || "Dashboard"}
               </h2>
             </div>

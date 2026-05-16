@@ -12,7 +12,41 @@ export default function ExecutivesPage() {
     const fetchExecutives = async () => {
       try {
         const res = await getMembers("EXECUTIVE");
-        setExecutives(res.data || []);
+        let data = res.data || [];
+
+        const titleOrder = {
+          "President": 1,
+          "Vice President": 2,
+          "Treasurer": 3,
+          "General Secretary": 4,
+          "Joint General Secretary": 5,
+          "Information & Publication Secretary": 6,
+          "Council Member": 7,
+        };
+
+        const titleBnOrder = {
+          "সভাপতি": 1,
+          "সহ-সভাপতি": 2,
+          "কোষাধ্যক্ষ": 3,
+          "সাধারণ সম্পাদক": 4,
+          "সহ-সাধারণ সম্পাদক": 5,
+          "তথ্য ও প্রকাশনা সম্পাদক": 6,
+          "পরিষদ সদস্য": 7,
+        };
+
+        const getOrder = (member) => {
+          if (member.titleEn && titleOrder[member.titleEn]) return titleOrder[member.titleEn];
+          if (member.titleBn && titleBnOrder[member.titleBn]) return titleBnOrder[member.titleBn];
+          
+          for (const [title, order] of Object.entries(titleOrder)) {
+             if (member.titleEn?.toLowerCase().includes(title.toLowerCase())) return order;
+          }
+          return 99;
+        };
+
+        data.sort((a, b) => getOrder(a) - getOrder(b));
+        
+        setExecutives(data);
       } catch (error) {
         console.error("Failed to fetch executives:", error);
       } finally {

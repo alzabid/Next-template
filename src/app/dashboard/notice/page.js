@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getNotices, createNotice, updateNotice, deleteNotice } from "@/lib/api";
+import { getNotices, getNotice, createNotice, updateNotice, deleteNotice } from "@/lib/api";
 import {
   Plus,
   Search,
@@ -25,7 +25,7 @@ export default function NoticeManagement() {
   const [deleting, setDeleting] = useState(false);
   const [toast, setToast] = useState(null);
   const [formModal, setFormModal] = useState(null); // { mode: 'create' | 'edit', notice?: {...} }
-  const [formData, setFormData] = useState({ title: "", body: "" });
+  const [formData, setFormData] = useState({ title: "", body: "", pdfUrl: "" });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -70,13 +70,23 @@ export default function NoticeManagement() {
   };
 
   const openCreateModal = () => {
-    setFormData({ title: "", body: "" });
+    setFormData({ title: "", body: "", pdfUrl: "" });
     setFormModal({ mode: "create" });
   };
 
-  const openEditModal = (notice) => {
-    setFormData({ title: notice.title || "", body: notice.body || "" });
-    setFormModal({ mode: "edit", notice });
+  const openEditModal = async (notice) => {
+    try {
+      // Fetch full notice to get pdfUrl since it's not in the list view
+      const res = await getNotice(notice.id); 
+      const fullNotice = res.data;
+      setFormData({ title: fullNotice.title || "", body: fullNotice.body || "", pdfUrl: fullNotice.pdfUrl || "" });
+      setFormModal({ mode: "edit", notice: fullNotice });
+    } catch {
+      showToast("Failed to prepare notice for editing", "error");
+      // Fallback
+      setFormData({ title: notice.title || "", body: notice.body || "", pdfUrl: "" });
+      setFormModal({ mode: "edit", notice });
+    }
   };
 
   const handleSave = async () => {
@@ -109,6 +119,27 @@ export default function NoticeManagement() {
   const showToast = (message, type) => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
+  };
+
+  const handlePdfSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    if (file.type !== "application/pdf") {
+      showToast("Please select a valid PDF file", "error");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("PDF file is too large. Max size is 5MB.", "error");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setFormData((prev) => ({ ...prev, pdfUrl: e.target.result }));
+    };
+    reader.readAsDataURL(file);
   };
 
   const formatDate = (dateStr) => {
@@ -247,6 +278,42 @@ export default function NoticeManagement() {
                   rows={6}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all resize-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Attach PDF Document (Optional)
+                </label>
+                <div className="flex items-center gap-4">
+                  <label className="flex-1 cursor-pointer">
+                    <div className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-colors">
+                      <FileText className="w-5 h-5 text-slate-400" />
+                      <span className="text-sm text-slate-500 font-medium">
+                        Click to select PDF
+                      </span>
+                    </div>
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      onChange={handlePdfSelect}
+                      className="hidden"
+                    />
+                  </label>
+                  {formData.pdfUrl && (
+                    <div className="flex items-center gap-2 px-4 py-3 bg-emerald-50 text-emerald-600 rounded-xl border border-emerald-200">
+                      <CheckCircle className="w-5 h-5" />
+                      <span className="text-sm font-medium">PDF Attached</span>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, pdfUrl: "" })}
+                        className="p-1 hover:bg-emerald-100 rounded-lg transition-colors ml-2"
+                        title="Remove PDF"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
