@@ -30,7 +30,15 @@ async function request(endpoint, options = {}) {
   const data = await res.json();
 
   if (!res.ok) {
-    const error = new Error(data.message || "Something went wrong");
+    let errorMessage = data.message || "Something went wrong";
+    if (
+      data.errorDetails &&
+      Array.isArray(data.errorDetails) &&
+      data.errorDetails.length > 0
+    ) {
+      errorMessage = data.errorDetails[0].message || errorMessage;
+    }
+    const error = new Error(errorMessage);
     error.status = res.status;
     error.data = data;
     throw error;
@@ -71,6 +79,14 @@ export async function refreshTokenAPI(refreshToken) {
 
 export async function logoutAPI() {
   const data = await request("/auth/logout", { method: "POST" });
+  return data;
+}
+
+export async function changePasswordAPI(oldPassword, newPassword) {
+  const data = await request("/auth/change-password", {
+    method: "POST",
+    body: JSON.stringify({ oldPassword, newPassword }),
+  });
   return data;
 }
 

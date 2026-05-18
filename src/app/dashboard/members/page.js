@@ -18,6 +18,29 @@ import {
   Image as ImageIcon
 } from "lucide-react";
 
+const getCurrentTermYear = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0 is January, 5 is June
+  // If we are before June, the term is from the previous year
+  if (month < 5) {
+    return year - 1;
+  }
+  return year;
+};
+
+const generateTerms = () => {
+  const currentTermYear = getCurrentTermYear();
+  const terms = [];
+  // Generate 15 years back up to the next upcoming term
+  for (let i = currentTermYear - 15; i <= currentTermYear + 1; i++) {
+    terms.push(`${i}-${(i + 1).toString().slice(2)}`);
+  }
+  return terms.reverse();
+};
+
+const DEFAULT_TERM = `${getCurrentTermYear()}-${(getCurrentTermYear() + 1).toString().slice(2)}`;
+
 export default function MemberManagement() {
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -38,7 +61,7 @@ export default function MemberManagement() {
     email: "",
     phone: "",
     image: "",
-    year: "2025-26",
+    year: DEFAULT_TERM,
     category: "MEMBER"
   });
   const [saving, setSaving] = useState(false);
@@ -97,7 +120,7 @@ export default function MemberManagement() {
       email: "",
       phone: "",
       image: "",
-      year: "2025-26",
+      year: DEFAULT_TERM,
       category: "MEMBER"
     });
     setFormModal({ mode: "create" });
@@ -112,7 +135,7 @@ export default function MemberManagement() {
       email: member.email || "",
       phone: member.phone || "",
       image: member.image || "",
-      year: member.year || "2025-26",
+      year: member.year || DEFAULT_TERM,
       category: member.category || "MEMBER"
     });
     setFormModal({ mode: "edit", member });
@@ -395,15 +418,19 @@ export default function MemberManagement() {
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
                     Year / Term *
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.year}
                     onChange={(e) =>
                       setFormData({ ...formData, year: e.target.value })
                     }
-                    placeholder="e.g. 2025-26 or 2024"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
-                  />
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
+                  >
+                    {generateTerms().map((term) => (
+                      <option key={term} value={term}>
+                        {term}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>

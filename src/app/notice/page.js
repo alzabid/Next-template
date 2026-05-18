@@ -13,16 +13,16 @@ import {
   Eye,
   AlertCircle,
 } from "lucide-react";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
-const PdfViewer = dynamic(() => import('./PdfViewer'), {
+const PdfViewer = dynamic(() => import("./PdfViewer"), {
   ssr: false,
   loading: () => (
     <div className="flex flex-col items-center justify-center py-20 text-blue-500">
       <Loader2 className="w-8 h-8 animate-spin mb-4" />
       <p>Loading PDF Viewer...</p>
     </div>
-  )
+  ),
 });
 
 export default function NoticePage() {
@@ -329,7 +329,7 @@ export default function NoticePage() {
               {selectedNotice.pdfUrl && (
                 <div className="w-full mt-4 border border-gray-200 rounded-xl overflow-hidden bg-gray-100 flex flex-col h-[75vh]">
                   <div className="flex-1 overflow-y-auto p-4 flex justify-center bg-gray-200">
-                    <PdfViewer 
+                    <PdfViewer
                       url={selectedNotice.pdfUrl}
                       noticeId={selectedNotice.id}
                       numPages={numPages}
@@ -341,7 +341,7 @@ export default function NoticePage() {
               )}
 
               {/* Footer */}
-              <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+              {/* <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
                 <p className="text-xs text-gray-400">
                   Bangladesh Atomic Energy Scientist&apos;s Association (BAESA)
                 </p>
@@ -351,7 +351,7 @@ export default function NoticePage() {
                 >
                   Close
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

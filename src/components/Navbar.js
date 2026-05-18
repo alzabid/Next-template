@@ -1,26 +1,53 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import logo from "../assets/logo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { getMembers } from "../lib/api";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+  const [availableYears, setAvailableYears] = useState([]);
+
+  useEffect(() => {
+    const fetchYears = async () => {
+      try {
+        const res = await getMembers("EXECUTIVE");
+        const data = res.data || [];
+
+        // Calculate current active term
+        const date = new Date();
+        const y = date.getFullYear();
+        const m = date.getMonth(); // 0 is January, 5 is June
+        const currentTermYear = m < 5 ? y - 1 : y;
+        const currentTermStr = `${currentTermYear}-${(currentTermYear + 1).toString().slice(2)}`;
+
+        const dbYears = [...new Set(data.map((e) => e.year).filter(Boolean))];
+        if (!dbYears.includes(currentTermStr)) {
+          dbYears.push(currentTermStr);
+        }
+
+        const years = dbYears.sort((a, b) => b.localeCompare(a));
+        setAvailableYears(years);
+      } catch (error) {
+        console.error("Failed to fetch executive years for navbar", error);
+      }
+    };
+    fetchYears();
+  }, []);
 
   const menuItems = [
     { name: "ABOUT", link: "/about" },
     {
       name: "BAESA EXECUTIVES",
       link: "/executives",
-      hasSubmenu: true,
-      submenu: [
-        { name: "BAESA 2025-26", link: "/executives" },
-        { name: "BAESA 2024-25", link: "/" },
-        { name: "BAESA 2016-17", link: "/" },
-        { name: "BAESA 2014-15", link: "/" },
-      ],
+      hasSubmenu: availableYears.length > 0,
+      submenu: availableYears.map((year) => ({
+        name: `BAESA ${year}`,
+        link: `/executives?year=${year}`,
+      })),
     },
     {
       name: "BAESA MEMBERS",
@@ -176,14 +203,14 @@ function Navbar() {
                       }`}
                     >
                       {item.submenu.map((subItem, subIndex) => (
-                        <a
+                        <Link
                           key={subIndex}
                           href={subItem.link}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="block px-10 py-3 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-900 border-b border-gray-200 last:border-b-0"
                         >
                           {subItem.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
