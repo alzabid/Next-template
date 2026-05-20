@@ -219,7 +219,6 @@ export default function ProfilePage() {
                     name="oldPassword"
                     value={formData.oldPassword}
                     onChange={handleInputChange}
-                    required
                     placeholder="Enter current password"
                     className="w-full pl-4 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                   />
@@ -247,7 +246,6 @@ export default function ProfilePage() {
                     name="newPassword"
                     value={formData.newPassword}
                     onChange={handleInputChange}
-                    required
                     placeholder="Enter new password (min. 6 chars)"
                     className="w-full pl-4 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                   />
@@ -275,7 +273,6 @@ export default function ProfilePage() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    required
                     placeholder="Re-enter new password"
                     className="w-full pl-4 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
                   />

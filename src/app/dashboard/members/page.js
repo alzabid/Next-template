@@ -169,11 +169,6 @@ export default function MemberManagement() {
   };
 
   const handleSave = async () => {
-    if (!formData.name.trim() || !formData.email.trim() || !formData.titleEn.trim() || !formData.department.trim()) {
-      showToast("Name, English Title, Department, and Email are required", "error");
-      return;
-    }
-
     setSaving(true);
     try {
       if (formModal.mode === "create") {
@@ -326,7 +321,7 @@ export default function MemberManagement() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Name *
+                    Name
                   </label>
                   <input
                     type="text"
@@ -341,7 +336,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Email *
+                    Email
                   </label>
                   <input
                     type="email"
@@ -356,7 +351,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Title (English) *
+                    Title (English)
                   </label>
                   <input
                     type="text"
@@ -386,7 +381,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Department *
+                    Department
                   </label>
                   <input
                     type="text"
@@ -416,7 +411,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Year / Term *
+                    Year / Term
                   </label>
                   <select
                     value={formData.year}
@@ -435,7 +430,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Category *
+                    Category
                   </label>
                   <select
                     value={formData.category}

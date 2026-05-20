@@ -83,8 +83,8 @@ export default function EventManagement() {
         items.filter(
           (item) =>
             (item.title || "").toLowerCase().includes(search.toLowerCase()) ||
-            (item.slug || "").toLowerCase().includes(search.toLowerCase())
-        )
+            (item.slug || "").toLowerCase().includes(search.toLowerCase()),
+        ),
       );
     } else {
       setFilteredItems(items);
@@ -167,11 +167,6 @@ export default function EventManagement() {
   };
 
   const handleSave = async () => {
-    if (!formData.title.trim() || !formData.slug.trim()) {
-      showToast("Title and slug are required", "error");
-      return;
-    }
-
     setSaving(true);
     try {
       const payload = { ...formData };
@@ -187,7 +182,7 @@ export default function EventManagement() {
     } catch (err) {
       showToast(
         `Failed to ${formModal.mode === "create" ? "create" : "update"} event`,
-        "error"
+        "error",
       );
     } finally {
       setSaving(false);
@@ -200,7 +195,7 @@ export default function EventManagement() {
       await fetchItems();
       showToast(
         `Event ${event.isPublished ? "unpublished" : "published"} successfully`,
-        "success"
+        "success",
       );
     } catch {
       showToast("Failed to update event status", "error");
@@ -426,7 +421,7 @@ export default function EventManagement() {
                 <div className="space-y-4 px-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className={labelClass}>Event Title *</label>
+                      <label className={labelClass}>Event Title</label>
                       <input
                         type="text"
                         value={formData.title}
@@ -446,7 +441,7 @@ export default function EventManagement() {
                       />
                     </div>
                     <div>
-                      <label className={labelClass}>Slug *</label>
+                      <label className={labelClass}>Slug</label>
                       <input
                         type="text"
                         value={formData.slug}
@@ -464,7 +459,10 @@ export default function EventManagement() {
                       type="text"
                       value={formData.bannerImage}
                       onChange={(e) =>
-                        setFormData({ ...formData, bannerImage: e.target.value })
+                        setFormData({
+                          ...formData,
+                          bannerImage: e.target.value,
+                        })
                       }
                       placeholder="https://..."
                       className={inputClass}
@@ -477,7 +475,10 @@ export default function EventManagement() {
                         type="text"
                         value={formData.eventDate}
                         onChange={(e) =>
-                          setFormData({ ...formData, eventDate: e.target.value })
+                          setFormData({
+                            ...formData,
+                            eventDate: e.target.value,
+                          })
                         }
                         placeholder="e.g. ০৭ ফেব্রুয়ারি ২০২৬"
                         className={inputClass}
@@ -685,7 +686,7 @@ export default function EventManagement() {
                             updateContactPerson(
                               idx,
                               "designation",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           placeholder="Designation"
@@ -805,7 +806,7 @@ export default function EventManagement() {
                             updateFeaturedItem(
                               idx,
                               "description",
-                              e.target.value
+                              e.target.value,
                             )
                           }
                           placeholder="Item description"

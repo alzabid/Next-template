@@ -90,11 +90,6 @@ export default function NoticeManagement() {
   };
 
   const handleSave = async () => {
-    if (!formData.title.trim() || !formData.body.trim()) {
-      showToast("Title and body are required", "error");
-      return;
-    }
-
     setSaving(true);
     try {
       if (formModal.mode === "create") {

@@ -1,10 +1,19 @@
-'use client'
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ChevronDown, Calendar, BookOpen, Award, Users, ArrowRight, CheckCircle } from 'lucide-react';
-import Link from 'next/link';
+"use client";
+import { useState, useEffect } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  Calendar,
+  BookOpen,
+  Award,
+  Users,
+  ArrowRight,
+  CheckCircle,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
-  
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
 
@@ -116,7 +125,6 @@ export default function Home() {
     { number: "40+", label: "Years of Excellence", icon: CheckCircle },
   ];
 
- 
   return (
     <div className=" bg-white">
       {/* Banner Slider */}
@@ -242,7 +250,7 @@ export default function Home() {
       </div>
 
       {/* Recent Events Section */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+      <div className="max-w-7xl mx-auto px-4 py-16 hidden">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Recent Events & News
@@ -264,6 +272,7 @@ export default function Home() {
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
+
               <div className="p-6">
                 <div className="flex items-center gap-2 text-blue-600 text-sm mb-3">
                   <Calendar className="w-4 h-4" />
