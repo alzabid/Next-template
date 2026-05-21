@@ -8,7 +8,10 @@ import {
   Users,
   Filter,
   MailCheck,
+  Download,
 } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 import { getMembers } from "@/lib/api";
 
@@ -45,12 +48,12 @@ export default function MembersPage() {
   const years = ["All", "2024", "2016", "2014"];
 
   const filteredMembers = members.filter((member) => {
-    const matchesSearch =
-      member.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = member.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesDepartment =
       selectedDepartment === "All" || member.department === selectedDepartment;
-    const matchesYear =
-      selectedYear === "All" || member.year === selectedYear;
+    const matchesYear = selectedYear === "All" || member.year === selectedYear;
     return matchesSearch && matchesDepartment && matchesYear;
   });
 
@@ -58,6 +61,37 @@ export default function MembersPage() {
     total: members.length,
     departments: [...new Set(members.map((m) => m.department))].length,
     years: [...new Set(members.map((m) => m.year))].length,
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF("landscape");
+
+    // Add title
+    doc.setFontSize(18);
+    doc.text("BAESA Members List", 14, 22);
+
+    // Define the columns
+    const tableColumn = ["Name", "Designation (BAEC)", "Mobile Number"];
+
+    // Map data
+    const tableRows = filteredMembers.map((member) => [
+      member.name || "",
+      member.department || "N/A",
+      member.phone || "N/A",
+    ]);
+
+    // Generate table
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 3 },
+      headStyles: { fillColor: [30, 63, 159], textColor: [255, 255, 255] }, // blue-800
+    });
+
+    // Save the PDF
+    doc.save("BAESA_Members_List.pdf");
   };
 
   return (
@@ -127,7 +161,7 @@ export default function MembersPage() {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Bar */}
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <div className="relative">
                 <Search className=" text-black absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" />
                 <input
@@ -138,10 +172,10 @@ export default function MembersPage() {
                   className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Department Filter */}
-            <div className="md:w-[400]">
+            {/* <div className="md:w-[400]">
               <div className="relative">
                 <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <select
@@ -156,7 +190,7 @@ export default function MembersPage() {
                   ))}
                 </select>
               </div>
-            </div>
+            </div> */}
 
             {/* Year Filter */}
             {/* <div className="md:w-48">
@@ -175,6 +209,17 @@ export default function MembersPage() {
                   ))}
               </select>
             </div> */}
+
+            {/* Download Button */}
+            <div className="ml-auto flex items-center">
+              <button
+                onClick={handleDownloadPDF}
+                className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 text-white px-5 py-2.5 rounded-lg transition-colors shadow-md font-semibold"
+              >
+                <Download className="w-5 h-5" />
+                Download PDF
+              </button>
+            </div>
           </div>
 
           <div className="mt-4 text-sm text-gray-600">
@@ -188,56 +233,67 @@ export default function MembersPage() {
             <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMembers.map((member) => (
-            <div
-              key={member.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border-t-4 border-blue-600 group"
-            >
-              {/* Member Image */}
-              <div className="relative h-72 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                {/* <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                  {member.joinYear}
-                </div> */}
-              </div>
-
-              {/* Member Info */}
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors">
-                  {member.name}
-                </h3>
-                <p className="text-sm text-blue-600 font-semibold mb-3">
-                  {member.titleEn} {member.titleBn && `(${member.titleBn})`}
-                </p>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-start gap-2">
-                    <Building2 className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-600">{member.department}</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <MailCheck className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                    {/* <Award className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" /> */}
-                    <p className="text-xs text-gray-600">{member.email}</p>
-                  </div>
-                </div>
-
-                <a
-                  href={`mailto:${member.email}`}
-                  className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors duration-200 text-sm font-semibold"
-                >
-                  <Mail className="w-4 h-4" />
-                  Contact
-                </a>
-              </div>
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-blue-800 text-white text-sm uppercase tracking-wider">
+                    <th className="py-4 px-6 font-semibold whitespace-nowrap">
+                      Name
+                    </th>
+                    <th className="py-4 px-6 font-semibold whitespace-nowrap">
+                      Designation (BAEC)
+                    </th>
+                    <th className="py-4 px-6 font-semibold whitespace-nowrap">
+                      Mobile Number
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredMembers.map((member) => (
+                    <tr
+                      key={member.id}
+                      className="hover:bg-blue-50 transition-colors duration-200"
+                    >
+                      <td className="py-4 px-6 min-w-[250px]">
+                        <div className="flex items-center gap-4">
+                          {member.image ? (
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              className="w-12 h-12 rounded-full object-cover border-2 border-blue-100 shadow-sm"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold text-lg shadow-sm">
+                              {member.name?.charAt(0) || "M"}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-bold text-gray-800 text-base">
+                              {member.name}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 min-w-[300px]">
+                        <div className="flex items-start gap-2">
+                          <Building2 className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-gray-700 font-medium">
+                            {member.department || "N/A"}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 min-w-[150px]">
+                        <p className="text-sm font-semibold text-gray-700">
+                          {member.phone || "N/A"}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
+          </div>
         )}
 
         {/* No Results Message */}
