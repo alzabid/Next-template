@@ -10,6 +10,19 @@ function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
   const [availableYears, setAvailableYears] = useState([]);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchYears = async () => {
@@ -59,7 +72,7 @@ function Navbar() {
     { name: "CONTACT", link: "/contact" },
   ];
   return (
-    <nav className="w-full flex flex-col-reverse md:flex-col ">
+    <>
       {/* Header Top Section */}
       <div className=" hidden lg:flex bg-blue-100">
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
@@ -95,16 +108,28 @@ function Navbar() {
       </div>
 
       {/* Navigation Menu */}
-      <div className="bg-white border-b-2 border-t-2 border-blue-900">
+      <div className="sticky top-0 z-50 bg-white border-b-2 border-t-2 border-blue-900 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           {/* Desktop Menu */}
-          <div className="hidden lg:flex">
-            <ul className="flex justify-between items-center w-full">
+          <div className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? 'py-1' : ''}`}>
+            {/* Logo in Sticky Nav */}
+            <div
+              className={`flex items-center overflow-hidden transition-all duration-500 ease-in-out ${
+                isScrolled ? "max-w-[300px] opacity-100 pr-8" : "max-w-0 opacity-0 pr-0"
+              }`}
+            >
+              <Link href="/" className="flex items-center gap-3">
+                <Image src={logo} alt="logo" width={40} height={40} className="w-10 h-10 min-w-[40px] object-contain rounded-md" />
+                <span className="text-2xl font-bold text-blue-900 whitespace-nowrap">BAESA</span>
+              </Link>
+            </div>
+            
+            <ul className="flex justify-between items-center w-full flex-1">
               {menuItems.map((item, index) => (
                 <li key={index} className="relative group">
                   {item.hasSubmenu ? (
                     <div className="relative h-full">
-                      <button className="h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap">
+                      <button className="h-full px-4 xl:px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap">
                         {item.name}
                       </button>
 
@@ -124,7 +149,7 @@ function Navbar() {
                   ) : (
                     <Link
                       href={item.link}
-                      className="h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
+                      className="h-full px-4 xl:px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
                     >
                       {item.name}
                     </Link>
@@ -236,7 +261,7 @@ function Navbar() {
           className="fixed inset-0 bg-white/20 backdrop-blur-xs z-40 lg:hidden"
         />
       )}
-    </nav>
+    </>
   );
 }
 
