@@ -23,6 +23,7 @@ async function request(endpoint, options = {}) {
   }
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
+    cache: "no-store",
     ...options,
     headers,
   });
@@ -161,7 +162,7 @@ export async function deleteNotice(id) {
 // ─── Event API ────────────────────────────────────────────
 // Public endpoints (no auth required)
 export async function getPublishedEvents() {
-  const res = await fetch(`${API_BASE}/event`);
+  const res = await fetch(`${API_BASE}/event`, { cache: "no-store" });
   const data = await res.json();
   if (!res.ok) {
     const error = new Error(data.message || "Something went wrong");
@@ -172,7 +173,9 @@ export async function getPublishedEvents() {
 }
 
 export async function getEventBySlug(slug) {
-  const res = await fetch(`${API_BASE}/event/slug/${slug}`);
+  const res = await fetch(`${API_BASE}/event/slug/${slug}`, {
+    cache: "no-store",
+  });
   const data = await res.json();
   if (!res.ok) {
     const error = new Error(data.message || "Something went wrong");
