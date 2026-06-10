@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { getMembers, createMember, updateMember, deleteMember, uploadToImageBB } from "@/lib/api";
+import { getMembers, createMember, updateMember, deleteMember, uploadToImageBB, getSetting, updateSetting } from "@/lib/api";
 import {
   Plus,
   Search,
@@ -15,7 +15,8 @@ import {
   Building2,
   Mail,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  FileText
 } from "lucide-react";
 
 const getCurrentTermYear = () => {
@@ -65,12 +66,21 @@ export default function MemberManagement() {
     category: "MEMBER"
   });
   const [saving, setSaving] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const fileInputRef = useRef(null);
+  const [membersPdf, setMembersPdf] = useState("");
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const pdfInputRef = useRef(null);
 
   useEffect(() => {
     fetchItems();
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await getSetting("members_pdf");
+      if (res.data) setMembersPdf(res.data.value);
+    } catch {}
+  };
 
   useEffect(() => {
     let result = items;
@@ -165,6 +175,39 @@ export default function MemberManagement() {
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const handlePdfUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      showToast("Please select a PDF file", "error");
+      return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) {
+      showToast("PDF size should be less than 50MB", "error");
+      return;
+    }
+
+    setUploadingPdf(true);
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result;
+        await updateSetting("members_pdf", base64String);
+        setMembersPdf(base64String);
+        showToast("PDF uploaded successfully", "success");
+        setUploadingPdf(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      showToast("Failed to upload PDF", "error");
+      setUploadingPdf(false);
+    } finally {
+      if (pdfInputRef.current) pdfInputRef.current.value = "";
     }
   };
 
@@ -479,13 +522,40 @@ export default function MemberManagement() {
             Manage your organization's members and executive committee.
           </p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 text-sm"
-        >
-          <Plus className="w-5 h-5" />
-          Add Member
-        </button>
+        <div className="flex items-center gap-3">
+          <input
+            type="file"
+            ref={pdfInputRef}
+            onChange={handlePdfUpload}
+            accept="application/pdf"
+            className="hidden"
+          />
+          <button
+            onClick={() => pdfInputRef.current?.click()}
+            disabled={uploadingPdf}
+            className="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-50 transition-all shadow-sm text-sm disabled:opacity-50"
+          >
+            {uploadingPdf ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            {membersPdf ? "Update PDF" : "Upload PDF"}
+          </button>
+          {membersPdf && (
+            <a
+              href={membersPdf}
+              download="members_list.pdf"
+              className="inline-flex items-center gap-2 bg-slate-100 text-slate-700 px-3 py-2.5 rounded-xl hover:bg-slate-200 transition-colors text-sm"
+              title="View Current PDF"
+            >
+              <FileText className="w-4 h-4" />
+            </a>
+          )}
+          <button
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 text-sm"
+          >
+            <Plus className="w-5 h-5" />
+            Add Member
+          </button>
+        </div>
       </div>
 
       {/* Search Bar */}

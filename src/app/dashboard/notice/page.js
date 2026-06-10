@@ -125,8 +125,8 @@ export default function NoticeManagement() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("PDF file is too large. Max size is 5MB.", "error");
+    if (file.size > 50 * 1024 * 1024) {
+      showToast("PDF file is too large. Max size is 50MB.", "error");
       return;
     }
 

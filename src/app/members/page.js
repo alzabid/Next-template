@@ -13,7 +13,7 @@ import {
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-import { getMembers } from "@/lib/api";
+import { getMembers, getSetting } from "@/lib/api";
 
 export default function MembersPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,6 +21,7 @@ export default function MembersPage() {
   const [selectedYear, setSelectedYear] = useState("All");
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [membersPdf, setMembersPdf] = useState("");
 
   useEffect(() => {
     const fetchMembersData = async () => {
@@ -33,7 +34,16 @@ export default function MembersPage() {
         setLoading(false);
       }
     };
+    const fetchSettings = async () => {
+      try {
+        const res = await getSetting("members_pdf");
+        if (res.data) setMembersPdf(res.data.value);
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
     fetchMembersData();
+    fetchSettings();
   }, []);
 
   const departments = [
@@ -64,34 +74,16 @@ export default function MembersPage() {
   };
 
   const handleDownloadPDF = () => {
-    const doc = new jsPDF("landscape");
-
-    // Add title
-    doc.setFontSize(18);
-    doc.text("BAESA Members List", 14, 22);
-
-    // Define the columns
-    const tableColumn = ["Name", "Designation (BAEC)", "Mobile Number"];
-
-    // Map data
-    const tableRows = filteredMembers.map((member) => [
-      member.name || "",
-      member.department || "N/A",
-      member.phone || "N/A",
-    ]);
-
-    // Generate table
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 30,
-      theme: "grid",
-      styles: { fontSize: 10, cellPadding: 3 },
-      headStyles: { fillColor: [30, 63, 159], textColor: [255, 255, 255] }, // blue-800
-    });
-
-    // Save the PDF
-    doc.save("BAESA_Members_List.pdf");
+    if (membersPdf) {
+      const link = document.createElement("a");
+      link.href = membersPdf;
+      link.download = "BAESA_Members_List.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      alert("No PDF document is available for download at the moment.");
+    }
   };
 
   return (

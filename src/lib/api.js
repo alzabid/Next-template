@@ -1,5 +1,5 @@
-const API_BASE = "https://next-template-server.vercel.app/api/v1";
-// const API_BASE = "http://localhost:5000/api/v1";
+// const API_BASE = "https://next-template-server.vercel.app/api/v1";
+const API_BASE = "http://localhost:5000/api/v1";
 const IMGBB_API_KEY = "cdeef2d905fb0d2f03c64731c19f17ef";
 
 // ─── Helper ───────────────────────────────────────────────
@@ -274,4 +274,18 @@ export async function uploadToImageBB(file) {
   }
 
   return data.data.display_url;
+}
+
+// ─── Settings API ─────────────────────────────────────────
+export async function getSetting(key) {
+  const data = await request(`/setting/${key}`);
+  return data;
+}
+
+export async function updateSetting(key, value) {
+  const data = await request(`/setting/${key}`, {
+    method: "POST",
+    body: JSON.stringify({ value }),
+  });
+  return data;
 }
