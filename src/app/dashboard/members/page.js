@@ -58,6 +58,11 @@ export default function MemberManagement() {
   const [filterCategory, setFilterCategory] = useState("ALL");
   const [deleteModal, setDeleteModal] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [deletePdfModal, setDeletePdfModal] = useState(null);
+  const [deletingPdf, setDeletingPdf] = useState(false);
+  const [uploadPdfModal, setUploadPdfModal] = useState(false);
+  const [pendingPdfFile, setPendingPdfFile] = useState(null);
+  const [pdfTitle, setPdfTitle] = useState("");
   const [toast, setToast] = useState(null);
 
   // form modal state
@@ -131,7 +136,7 @@ export default function MemberManagement() {
   };
 
   const handleDeletePdf = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this document?")) return;
+    setDeletingPdf(true);
     try {
       const updatedList = pdfList.filter((p) => p.id !== id);
       await updateSetting("members_pdf_list", JSON.stringify(updatedList));
@@ -142,6 +147,9 @@ export default function MemberManagement() {
       await updateSetting(fetchId, "");
     } catch (error) {
       showToast("Failed to delete PDF", "error");
+    } finally {
+      setDeletingPdf(false);
+      setDeletePdfModal(null);
     }
   };
 
@@ -242,20 +250,33 @@ export default function MemberManagement() {
     }
   };
 
-  const handlePdfUpload = async (e) => {
+  const handlePdfUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.type !== "application/pdf") {
       showToast("Please select a PDF file", "error");
+      if (pdfInputRef.current) pdfInputRef.current.value = "";
       return;
     }
 
     if (file.size > 50 * 1024 * 1024) {
       showToast("PDF size should be less than 50MB", "error");
+      if (pdfInputRef.current) pdfInputRef.current.value = "";
       return;
     }
 
+    setPendingPdfFile(file);
+    setPdfTitle(file.name.replace(/\.[^/.]+$/, ""));
+    setUploadPdfModal(true);
+  };
+
+  const confirmPdfUpload = async () => {
+    if (!pendingPdfFile || !pdfTitle.trim()) {
+      showToast("Please provide a title", "error");
+      return;
+    }
+    
     setUploadingPdf(true);
     try {
       const reader = new FileReader();
@@ -264,8 +285,8 @@ export default function MemberManagement() {
         const newId = Date.now().toString() + Math.random().toString(36).substring(7);
         const newPdf = {
           id: newId,
-          name: file.name,
-          size: file.size,
+          name: pdfTitle.trim(),
+          size: pendingPdfFile.size,
           uploadedAt: new Date().toISOString()
         };
         
@@ -279,14 +300,23 @@ export default function MemberManagement() {
         
         showToast("Document uploaded successfully", "success");
         setUploadingPdf(false);
+        setUploadPdfModal(false);
+        setPendingPdfFile(null);
+        setPdfTitle("");
+        if (pdfInputRef.current) pdfInputRef.current.value = "";
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(pendingPdfFile);
     } catch (error) {
       showToast("Failed to upload PDF", "error");
       setUploadingPdf(false);
-    } finally {
-      if (pdfInputRef.current) pdfInputRef.current.value = "";
     }
+  };
+
+  const cancelPdfUpload = () => {
+    setUploadPdfModal(false);
+    setPendingPdfFile(null);
+    setPdfTitle("");
+    if (pdfInputRef.current) pdfInputRef.current.value = "";
   };
 
   const handleSave = async () => {
@@ -367,6 +397,93 @@ export default function MemberManagement() {
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : null}
                   Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete PDF Modal */}
+      {deletePdfModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <div className="text-center">
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="w-7 h-7 text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">
+                Delete Document
+              </h3>
+              <p className="text-slate-500 text-sm mb-6">
+                Are you sure you want to delete &quot;{deletePdfModal.name}&quot;?
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeletePdfModal(null)}
+                  className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDeletePdf(deletePdfModal.id)}
+                  disabled={deletingPdf}
+                  className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {deletingPdf ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : null}
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload PDF Modal */}
+      {uploadPdfModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ animation: "fadeIn 0.2s ease-out" }}>
+            <div className="text-center">
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-7 h-7 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">
+                Document Title
+              </h3>
+              <p className="text-slate-500 text-sm mb-4">
+                Please enter a title for the document you are about to upload.
+              </p>
+              
+              <div className="mb-6 text-left">
+                <input
+                  type="text"
+                  value={pdfTitle}
+                  onChange={(e) => setPdfTitle(e.target.value)}
+                  placeholder="Enter document title"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={cancelPdfUpload}
+                  className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmPdfUpload}
+                  disabled={uploadingPdf}
+                  className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {uploadingPdf ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : null}
+                  Upload
                 </button>
               </div>
             </div>
@@ -685,7 +802,7 @@ export default function MemberManagement() {
                           View
                         </button>
                         <button
-                          onClick={() => handleDeletePdf(pdf.id)}
+                          onClick={() => setDeletePdfModal(pdf)}
                           className="px-3 py-1.5 text-sm bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors"
                         >
                           Delete

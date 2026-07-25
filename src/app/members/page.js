@@ -9,6 +9,9 @@ import {
   Filter,
   MailCheck,
   Download,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
 } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -21,7 +24,14 @@ export default function MembersPage() {
   const [selectedYear, setSelectedYear] = useState("All");
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [membersPdf, setMembersPdf] = useState("");
+  const [pdfList, setPdfList] = useState([]);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
     const fetchMembersData = async () => {
@@ -36,8 +46,16 @@ export default function MembersPage() {
     };
     const fetchSettings = async () => {
       try {
-        const res = await getSetting("members_pdf");
-        if (res.data) setMembersPdf(res.data.value);
+        const res = await getSetting("members_pdf_list");
+        if (res.data && res.data.value) {
+          setPdfList(JSON.parse(res.data.value));
+        } else {
+          // Fallback check just in case
+          const legacyRes = await getSetting("members_pdf");
+          if (legacyRes.data && legacyRes.data.value) {
+            setPdfList([{ id: "legacy", name: "BAESA_Members_List.pdf" }]);
+          }
+        }
       } catch (error) {
         console.error("Failed to fetch settings:", error);
       }
@@ -73,21 +91,66 @@ export default function MembersPage() {
     years: [...new Set(members.map((m) => m.year))].length,
   };
 
-  const handleDownloadPDF = () => {
-    if (membersPdf) {
-      const link = document.createElement("a");
-      link.href = membersPdf;
-      link.download = "BAESA_Members_List.pdf";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+  const handleDownloadPDF = async () => {
+    if (pdfList.length > 0) {
+      setDownloadingPdf(true);
+      try {
+        const activePdf = pdfList[0];
+        const fetchId = activePdf.id === "legacy" ? "members_pdf_legacy" : `members_pdf_${activePdf.id}`;
+        
+        let pdfData = null;
+        if (activePdf.id === "legacy") {
+           const res1 = await getSetting("members_pdf_legacy");
+           if (res1.data && res1.data.value) pdfData = res1.data.value;
+           else {
+             const res2 = await getSetting("members_pdf");
+             if (res2.data && res2.data.value) pdfData = res2.data.value;
+           }
+        } else {
+           const res = await getSetting(fetchId);
+           if (res.data && res.data.value) pdfData = res.data.value;
+        }
+
+        if (pdfData) {
+          const link = document.createElement("a");
+          link.href = pdfData;
+          link.download = activePdf.name || "BAESA_Members_List.pdf";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          showToast("Failed to fetch the document data.", "error");
+        }
+      } catch(e) {
+        showToast("Failed to download PDF document.", "error");
+      } finally {
+        setDownloadingPdf(false);
+      }
     } else {
-      alert("No PDF document is available for download at the moment.");
+      showToast("No PDF uploaded here", "error");
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed top-20 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-sm font-medium transition-all ${
+            toast.type === "success"
+              ? "bg-emerald-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <CheckCircle className="w-5 h-5" />
+          ) : (
+            <AlertCircle className="w-5 h-5" />
+          )}
+          {toast.message}
+        </div>
+      )}
+
       {/* Page Header */}
       <div className=" text-blue-800 py-16">
         <div className="text-center max-w-7xl mx-auto px-4">
@@ -206,9 +269,14 @@ export default function MembersPage() {
             <div className="ml-auto flex items-center">
               <button
                 onClick={handleDownloadPDF}
-                className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 text-white px-5 py-2.5 rounded-lg transition-colors shadow-md font-semibold"
+                disabled={downloadingPdf}
+                className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 disabled:bg-blue-800/70 text-white px-5 py-2.5 rounded-lg transition-colors shadow-md font-semibold"
               >
-                <Download className="w-5 h-5" />
+                {downloadingPdf ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Download className="w-5 h-5" />
+                )}
                 Download PDF
               </button>
             </div>
