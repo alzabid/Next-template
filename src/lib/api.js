@@ -1,4 +1,4 @@
-const API_BASE = "https://next-template-server.vercel.app/api/v1";
+const API_BASE = "https://baesa-server.vercel.app/api/v1";
 // const API_BASE = "http://localhost:5000/api/v1";
 const IMGBB_API_KEY = "cdeef2d905fb0d2f03c64731c19f17ef";
 
@@ -23,6 +23,7 @@ async function request(endpoint, options = {}) {
   }
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
+    cache: "no-store",
     ...options,
     headers,
   });
@@ -30,7 +31,15 @@ async function request(endpoint, options = {}) {
   const data = await res.json();
 
   if (!res.ok) {
-    const error = new Error(data.message || "Something went wrong");
+    let errorMessage = data.message || "Something went wrong";
+    if (
+      data.errorDetails &&
+      Array.isArray(data.errorDetails) &&
+      data.errorDetails.length > 0
+    ) {
+      errorMessage = data.errorDetails[0].message || errorMessage;
+    }
+    const error = new Error(errorMessage);
     error.status = res.status;
     error.data = data;
     throw error;
@@ -71,6 +80,14 @@ export async function refreshTokenAPI(refreshToken) {
 
 export async function logoutAPI() {
   const data = await request("/auth/logout", { method: "POST" });
+  return data;
+}
+
+export async function changePasswordAPI(oldPassword, newPassword) {
+  const data = await request("/auth/change-password", {
+    method: "POST",
+    body: JSON.stringify({ oldPassword, newPassword }),
+  });
   return data;
 }
 
@@ -145,7 +162,7 @@ export async function deleteNotice(id) {
 // ─── Event API ────────────────────────────────────────────
 // Public endpoints (no auth required)
 export async function getPublishedEvents() {
-  const res = await fetch(`${API_BASE}/event`);
+  const res = await fetch(`${API_BASE}/event`, { cache: "no-store" });
   const data = await res.json();
   if (!res.ok) {
     const error = new Error(data.message || "Something went wrong");
@@ -156,7 +173,9 @@ export async function getPublishedEvents() {
 }
 
 export async function getEventBySlug(slug) {
-  const res = await fetch(`${API_BASE}/event/slug/${slug}`);
+  const res = await fetch(`${API_BASE}/event/slug/${slug}`, {
+    cache: "no-store",
+  });
   const data = await res.json();
   if (!res.ok) {
     const error = new Error(data.message || "Something went wrong");
@@ -255,4 +274,18 @@ export async function uploadToImageBB(file) {
   }
 
   return data.data.display_url;
+}
+
+// ─── Settings API ─────────────────────────────────────────
+export async function getSetting(key) {
+  const data = await request(`/setting/${key}`);
+  return data;
+}
+
+export async function updateSetting(key, value) {
+  const data = await request(`/setting/${key}`, {
+    method: "POST",
+    body: JSON.stringify({ value }),
+  });
+  return data;
 }

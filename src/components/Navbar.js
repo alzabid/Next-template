@@ -1,26 +1,66 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ChevronDown } from "lucide-react";
 import logo from "../assets/logo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { getMembers } from "../lib/api";
 
 function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
+  const [availableYears, setAvailableYears] = useState([]);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 150) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const fetchYears = async () => {
+      try {
+        const res = await getMembers("EXECUTIVE");
+        const data = res.data || [];
+
+        // Calculate current active term
+        const date = new Date();
+        const y = date.getFullYear();
+        const m = date.getMonth(); // 0 is January, 5 is June
+        const currentTermYear = m < 5 ? y - 1 : y;
+        const currentTermStr = `${currentTermYear}-${(currentTermYear + 1).toString().slice(2)}`;
+
+        const dbYears = [...new Set(data.map((e) => e.year).filter(Boolean))];
+        if (!dbYears.includes(currentTermStr)) {
+          dbYears.push(currentTermStr);
+        }
+
+        const years = dbYears.sort((a, b) => b.localeCompare(a));
+        setAvailableYears(years);
+      } catch (error) {
+        console.error("Failed to fetch executive years for navbar", error);
+      }
+    };
+    fetchYears();
+  }, []);
 
   const menuItems = [
     { name: "ABOUT", link: "/about" },
     {
       name: "BAESA EXECUTIVES",
       link: "/executives",
-      hasSubmenu: true,
-      submenu: [
-        { name: "BAESA 2025-26", link: "/executives" },
-        { name: "BAESA 2024-25", link: "/" },
-        { name: "BAESA 2016-17", link: "/" },
-        { name: "BAESA 2014-15", link: "/" },
-      ],
+      hasSubmenu: availableYears.length > 0,
+      submenu: availableYears.map((year) => ({
+        name: `BAESA ${year}`,
+        link: `/executives?year=${year}`,
+      })),
     },
     {
       name: "BAESA MEMBERS",
@@ -32,7 +72,7 @@ function Navbar() {
     { name: "CONTACT", link: "/contact" },
   ];
   return (
-    <nav className="w-full flex flex-col-reverse md:flex-col ">
+    <>
       {/* Header Top Section */}
       <div className=" hidden lg:flex bg-blue-100">
         <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
@@ -68,16 +108,28 @@ function Navbar() {
       </div>
 
       {/* Navigation Menu */}
-      <div className="bg-white border-b-2 border-t-2 border-blue-900">
+      <div className="sticky top-0 z-50 bg-white border-b-2 border-t-2 border-blue-900 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           {/* Desktop Menu */}
-          <div className="hidden lg:flex">
-            <ul className="flex justify-between items-center w-full">
+          <div className={`hidden lg:flex items-center transition-all duration-300 ${isScrolled ? 'py-1' : ''}`}>
+            {/* Logo in Sticky Nav */}
+            <div
+              className={`flex items-center overflow-hidden transition-all duration-500 ease-in-out ${
+                isScrolled ? "max-w-[300px] opacity-100 pr-8" : "max-w-0 opacity-0 pr-0"
+              }`}
+            >
+              <Link href="/" className="flex items-center gap-3">
+                <Image src={logo} alt="logo" width={40} height={40} className="w-10 h-10 min-w-[40px] object-contain rounded-md" />
+                <span className="text-2xl font-bold text-blue-900 whitespace-nowrap">BAESA</span>
+              </Link>
+            </div>
+            
+            <ul className="flex justify-between items-center w-full flex-1">
               {menuItems.map((item, index) => (
                 <li key={index} className="relative group">
                   {item.hasSubmenu ? (
                     <div className="relative h-full">
-                      <button className="h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap">
+                      <button className="h-full px-4 xl:px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap">
                         {item.name}
                       </button>
 
@@ -97,7 +149,7 @@ function Navbar() {
                   ) : (
                     <Link
                       href={item.link}
-                      className="h-full px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
+                      className="h-full px-4 xl:px-6 py-3 text-sm font-semibold text-black bg-white hover:bg-gray-50 transition-colors duration-200 flex items-center justify-center text-center uppercase whitespace-nowrap"
                     >
                       {item.name}
                     </Link>
@@ -176,14 +228,14 @@ function Navbar() {
                       }`}
                     >
                       {item.submenu.map((subItem, subIndex) => (
-                        <a
+                        <Link
                           key={subIndex}
                           href={subItem.link}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className="block px-10 py-3 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-900 border-b border-gray-200 last:border-b-0"
                         >
                           {subItem.name}
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -209,7 +261,7 @@ function Navbar() {
           className="fixed inset-0 bg-white/20 backdrop-blur-xs z-40 lg:hidden"
         />
       )}
-    </nav>
+    </>
   );
 }
 

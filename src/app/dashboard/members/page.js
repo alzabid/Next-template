@@ -1,6 +1,14 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { getMembers, createMember, updateMember, deleteMember, uploadToImageBB } from "@/lib/api";
+import {
+  getMembers,
+  createMember,
+  updateMember,
+  deleteMember,
+  uploadToImageBB,
+  getSetting,
+  updateSetting,
+} from "@/lib/api";
 import {
   Plus,
   Search,
@@ -15,8 +23,32 @@ import {
   Building2,
   Mail,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  FileText,
 } from "lucide-react";
+
+const getCurrentTermYear = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0 is January, 5 is June
+  // If we are before June, the term is from the previous year
+  if (month < 5) {
+    return year - 1;
+  }
+  return year;
+};
+
+const generateTerms = () => {
+  const currentTermYear = getCurrentTermYear();
+  const terms = [];
+  // Generate 15 years back up to the next upcoming term
+  for (let i = currentTermYear - 15; i <= currentTermYear + 1; i++) {
+    terms.push(`${i}-${(i + 1).toString().slice(2)}`);
+  }
+  return terms.reverse();
+};
+
+const DEFAULT_TERM = `${getCurrentTermYear()}-${(getCurrentTermYear() + 1).toString().slice(2)}`;
 
 export default function MemberManagement() {
   const [items, setItems] = useState([]);
@@ -26,8 +58,13 @@ export default function MemberManagement() {
   const [filterCategory, setFilterCategory] = useState("ALL");
   const [deleteModal, setDeleteModal] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [deletePdfModal, setDeletePdfModal] = useState(null);
+  const [deletingPdf, setDeletingPdf] = useState(false);
+  const [uploadPdfModal, setUploadPdfModal] = useState(false);
+  const [pendingPdfFile, setPendingPdfFile] = useState(null);
+  const [pdfTitle, setPdfTitle] = useState("");
   const [toast, setToast] = useState(null);
-  
+
   // form modal state
   const [formModal, setFormModal] = useState(null); // { mode: 'create' | 'edit', member?: {...} }
   const [formData, setFormData] = useState({
@@ -38,26 +75,94 @@ export default function MemberManagement() {
     email: "",
     phone: "",
     image: "",
-    year: "2025-26",
-    category: "MEMBER"
+    year: DEFAULT_TERM,
+    category: "MEMBER",
   });
   const [saving, setSaving] = useState(false);
+  const [pdfList, setPdfList] = useState([]);
+  const [loadingPdfId, setLoadingPdfId] = useState(null);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const pdfInputRef = useRef(null);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     fetchItems();
+    fetchSettings();
   }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await getSetting("members_pdf_list");
+      if (res.data && res.data.value) {
+        setPdfList(JSON.parse(res.data.value));
+      } else {
+        const legacyRes = await getSetting("members_pdf");
+        if (legacyRes.data && legacyRes.data.value) {
+           const legacyPdf = {
+             id: "legacy",
+             name: "Legacy Members List.pdf",
+             size: legacyRes.data.value.length * 0.75,
+             uploadedAt: new Date().toISOString()
+           };
+           setPdfList([legacyPdf]);
+           await updateSetting("members_pdf_list", JSON.stringify([legacyPdf]));
+           await updateSetting("members_pdf_legacy", legacyRes.data.value);
+        }
+      }
+    } catch {}
+  };
+
+  const handleViewPdf = async (pdf) => {
+    setLoadingPdfId(pdf.id);
+    try {
+      const fetchId = pdf.id === "legacy" ? "members_pdf_legacy" : `members_pdf_${pdf.id}`;
+      const res = await getSetting(fetchId);
+      if (res.data && res.data.value) {
+        const a = document.createElement("a");
+        a.href = res.data.value;
+        a.download = pdf.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        showToast("PDF data not found", "error");
+      }
+    } catch (error) {
+      showToast("Failed to load PDF", "error");
+    } finally {
+      setLoadingPdfId(null);
+    }
+  };
+
+  const handleDeletePdf = async (id) => {
+    setDeletingPdf(true);
+    try {
+      const updatedList = pdfList.filter((p) => p.id !== id);
+      await updateSetting("members_pdf_list", JSON.stringify(updatedList));
+      setPdfList(updatedList);
+      showToast("PDF deleted successfully", "success");
+      
+      const fetchId = id === "legacy" ? "members_pdf_legacy" : `members_pdf_${id}`;
+      await updateSetting(fetchId, "");
+    } catch (error) {
+      showToast("Failed to delete PDF", "error");
+    } finally {
+      setDeletingPdf(false);
+      setDeletePdfModal(null);
+    }
+  };
 
   useEffect(() => {
     let result = items;
     if (filterCategory !== "ALL") {
-      result = result.filter(item => item.category === filterCategory);
+      result = result.filter((item) => item.category === filterCategory);
     }
     if (search.trim()) {
-      result = result.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()) || 
-        item.email.toLowerCase().includes(search.toLowerCase())
+      result = result.filter(
+        (item) =>
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.email.toLowerCase().includes(search.toLowerCase()),
       );
     }
     setFilteredItems(result);
@@ -97,8 +202,8 @@ export default function MemberManagement() {
       email: "",
       phone: "",
       image: "",
-      year: "2025-26",
-      category: "MEMBER"
+      year: DEFAULT_TERM,
+      category: "MEMBER",
     });
     setFormModal({ mode: "create" });
   };
@@ -112,8 +217,8 @@ export default function MemberManagement() {
       email: member.email || "",
       phone: member.phone || "",
       image: member.image || "",
-      year: member.year || "2025-26",
-      category: member.category || "MEMBER"
+      year: member.year || DEFAULT_TERM,
+      category: member.category || "MEMBER",
     });
     setFormModal({ mode: "edit", member });
   };
@@ -127,8 +232,8 @@ export default function MemberManagement() {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("Image size should be less than 5MB", "error");
+    if (file.size > 20 * 1024 * 1024) {
+      showToast("Image size should be less than 20MB", "error");
       return;
     }
 
@@ -145,12 +250,76 @@ export default function MemberManagement() {
     }
   };
 
-  const handleSave = async () => {
-    if (!formData.name.trim() || !formData.email.trim() || !formData.titleEn.trim() || !formData.department.trim()) {
-      showToast("Name, English Title, Department, and Email are required", "error");
+  const handlePdfUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      showToast("Please select a PDF file", "error");
+      if (pdfInputRef.current) pdfInputRef.current.value = "";
       return;
     }
 
+    if (file.size > 50 * 1024 * 1024) {
+      showToast("PDF size should be less than 50MB", "error");
+      if (pdfInputRef.current) pdfInputRef.current.value = "";
+      return;
+    }
+
+    setPendingPdfFile(file);
+    setPdfTitle(file.name.replace(/\.[^/.]+$/, ""));
+    setUploadPdfModal(true);
+  };
+
+  const confirmPdfUpload = async () => {
+    if (!pendingPdfFile || !pdfTitle.trim()) {
+      showToast("Please provide a title", "error");
+      return;
+    }
+    
+    setUploadingPdf(true);
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result;
+        const newId = Date.now().toString() + Math.random().toString(36).substring(7);
+        const newPdf = {
+          id: newId,
+          name: pdfTitle.trim(),
+          size: pendingPdfFile.size,
+          uploadedAt: new Date().toISOString()
+        };
+        
+        await updateSetting(`members_pdf_${newId}`, base64String);
+        
+        setPdfList((prev) => {
+          const updatedList = [newPdf, ...prev];
+          updateSetting("members_pdf_list", JSON.stringify(updatedList)).catch(() => {});
+          return updatedList;
+        });
+        
+        showToast("Document uploaded successfully", "success");
+        setUploadingPdf(false);
+        setUploadPdfModal(false);
+        setPendingPdfFile(null);
+        setPdfTitle("");
+        if (pdfInputRef.current) pdfInputRef.current.value = "";
+      };
+      reader.readAsDataURL(pendingPdfFile);
+    } catch (error) {
+      showToast("Failed to upload PDF", "error");
+      setUploadingPdf(false);
+    }
+  };
+
+  const cancelPdfUpload = () => {
+    setUploadPdfModal(false);
+    setPendingPdfFile(null);
+    setPdfTitle("");
+    if (pdfInputRef.current) pdfInputRef.current.value = "";
+  };
+
+  const handleSave = async () => {
     setSaving(true);
     try {
       if (formModal.mode === "create") {
@@ -165,7 +334,7 @@ export default function MemberManagement() {
     } catch {
       showToast(
         `Failed to ${formModal.mode === "create" ? "create" : "update"} member`,
-        "error"
+        "error",
       );
     } finally {
       setSaving(false);
@@ -235,6 +404,93 @@ export default function MemberManagement() {
         </div>
       )}
 
+      {/* Delete PDF Modal */}
+      {deletePdfModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <div className="text-center">
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trash2 className="w-7 h-7 text-red-500" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">
+                Delete Document
+              </h3>
+              <p className="text-slate-500 text-sm mb-6">
+                Are you sure you want to delete &quot;{deletePdfModal.name}&quot;?
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setDeletePdfModal(null)}
+                  className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDeletePdf(deletePdfModal.id)}
+                  disabled={deletingPdf}
+                  className="flex-1 py-2.5 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {deletingPdf ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : null}
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload PDF Modal */}
+      {uploadPdfModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl" style={{ animation: "fadeIn 0.2s ease-out" }}>
+            <div className="text-center">
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-7 h-7 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-800 mb-2">
+                Document Title
+              </h3>
+              <p className="text-slate-500 text-sm mb-4">
+                Please enter a title for the document you are about to upload.
+              </p>
+              
+              <div className="mb-6 text-left">
+                <input
+                  type="text"
+                  value={pdfTitle}
+                  onChange={(e) => setPdfTitle(e.target.value)}
+                  placeholder="Enter document title"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
+                  autoFocus
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={cancelPdfUpload}
+                  className="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmPdfUpload}
+                  disabled={uploadingPdf}
+                  className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {uploadingPdf ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : null}
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Create / Edit Modal */}
       {formModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
@@ -268,7 +524,6 @@ export default function MemberManagement() {
 
             {/* Modal Body */}
             <div className="p-6 space-y-5">
-              
               <div className="flex justify-center mb-6">
                 <div className="relative group">
                   <div className="w-32 h-32 rounded-full border-4 border-slate-100 overflow-hidden bg-slate-50 flex items-center justify-center relative">
@@ -281,7 +536,9 @@ export default function MemberManagement() {
                     ) : (
                       <ImageIcon className="w-10 h-10 text-slate-300" />
                     )}
-                    <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${formData.image ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'}`}>
+                    <div
+                      className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${formData.image ? "opacity-0 group-hover:opacity-100" : "opacity-100"}`}
+                    >
                       {uploadingImage ? (
                         <Loader2 className="w-6 h-6 text-white animate-spin" />
                       ) : (
@@ -303,7 +560,7 @@ export default function MemberManagement() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Name *
+                    Name
                   </label>
                   <input
                     type="text"
@@ -318,7 +575,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Email *
+                    Email
                   </label>
                   <input
                     type="email"
@@ -333,7 +590,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Title (English) *
+                    Title (English)
                   </label>
                   <input
                     type="text"
@@ -363,7 +620,7 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Department *
+                    Department
                   </label>
                   <input
                     type="text"
@@ -393,22 +650,26 @@ export default function MemberManagement() {
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Year / Term *
+                    Year / Term
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={formData.year}
                     onChange={(e) =>
                       setFormData({ ...formData, year: e.target.value })
                     }
-                    placeholder="e.g. 2025-26 or 2024"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
-                  />
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
+                  >
+                    {generateTerms().map((term) => (
+                      <option key={term} value={term}>
+                        {term}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Category *
+                    Category
                   </label>
                   <select
                     value={formData.category}
@@ -437,9 +698,7 @@ export default function MemberManagement() {
                 disabled={saving || uploadingImage}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50"
               >
-                {saving ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : null}
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 {formModal.mode === "create" ? "Save Member" : "Save Changes"}
               </button>
             </div>
@@ -457,13 +716,105 @@ export default function MemberManagement() {
             Manage your organization's members and executive committee.
           </p>
         </div>
-        <button
-          onClick={openCreateModal}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 text-sm"
-        >
-          <Plus className="w-5 h-5" />
-          Add Member
-        </button>
+        <div className="flex items-center gap-3">
+          <input
+            type="file"
+            ref={pdfInputRef}
+            onChange={handlePdfUpload}
+            accept="application/pdf"
+            className="hidden"
+          />
+          <button
+            onClick={() => pdfInputRef.current?.click()}
+            disabled={uploadingPdf}
+            className="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-50 transition-all shadow-sm text-sm disabled:opacity-50"
+          >
+            {uploadingPdf ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Upload className="w-4 h-4" />
+            )}
+            Upload Document
+          </button>
+          <button
+            onClick={openCreateModal}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:from-blue-500 hover:to-indigo-500 transition-all shadow-lg shadow-blue-500/20 text-sm"
+          >
+            <Plus className="w-5 h-5" />
+            Add Member
+          </button>
+        </div>
+      </div>
+
+      {/* Member Documents Section */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+          <div>
+            <h2 className="text-lg font-bold text-slate-800">Member Documents</h2>
+            <p className="text-sm text-slate-500">Manage uploaded PDF lists and resources.</p>
+          </div>
+        </div>
+        {pdfList.length === 0 ? (
+          <div className="p-8 text-center">
+            <FileText className="w-12 h-12 text-slate-200 mx-auto mb-3" />
+            <p className="text-slate-500 font-medium">No documents uploaded yet</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-white border-b border-slate-100">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Document Name</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Size</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Uploaded At</th>
+                  <th className="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {pdfList.map((pdf) => (
+                  <tr key={pdf.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
+                          <FileText className="w-4 h-4 text-red-500" />
+                        </div>
+                        <span className="font-medium text-slate-700">{pdf.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-600">
+                      {(pdf.size / (1024 * 1024)).toFixed(2)} MB
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-600">
+                      {new Date(pdf.uploadedAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleViewPdf(pdf)}
+                          disabled={loadingPdfId === pdf.id}
+                          className="px-3 py-1.5 text-sm bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
+                        >
+                          {loadingPdfId === pdf.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Search className="w-3.5 h-3.5" />
+                          )}
+                          View
+                        </button>
+                        <button
+                          onClick={() => setDeletePdfModal(pdf)}
+                          className="px-3 py-1.5 text-sm bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-medium transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Search Bar */}
@@ -562,7 +913,11 @@ export default function MemberManagement() {
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
                           {item.image ? (
-                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                            <img
+                              src={item.image}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <User className="w-5 h-5 text-blue-600" />
                           )}
@@ -586,7 +941,9 @@ export default function MemberManagement() {
                       </p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${item.category === 'EXECUTIVE' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold ${item.category === "EXECUTIVE" ? "bg-indigo-100 text-indigo-700" : "bg-emerald-100 text-emerald-700"}`}
+                      >
                         {item.category}
                       </span>
                       <p className="text-xs text-slate-500 mt-1 font-medium">

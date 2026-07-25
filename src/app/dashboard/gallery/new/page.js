@@ -200,7 +200,6 @@ export default function NewGalleryItem() {
                 value={form.title}
                 onChange={handleChange}
                 placeholder="e.g., International Nuclear Science Conference 2025"
-                required
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
               />
             </div>
@@ -210,7 +209,7 @@ export default function NewGalleryItem() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Event Date *
+                Event Date
               </label>
               <div className="relative">
                 <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -220,14 +219,13 @@ export default function NewGalleryItem() {
                   value={form.date}
                   onChange={handleChange}
                   placeholder="e.g., March 15, 2025"
-                  required
                   className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
                 />
               </div>
             </div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">
-                Location *
+                Location
               </label>
               <div className="relative">
                 <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -237,7 +235,6 @@ export default function NewGalleryItem() {
                   value={form.location}
                   onChange={handleChange}
                   placeholder="e.g., Dhaka, Bangladesh"
-                  required
                   className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
                 />
               </div>
@@ -257,7 +254,6 @@ export default function NewGalleryItem() {
                 value={form.attendees}
                 onChange={handleChange}
                 placeholder="e.g., 250+ Scientists"
-                required
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
               />
             </div>

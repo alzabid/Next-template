@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { Eye, EyeOff, Lock, Mail, Loader2, AlertCircle } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,6 +27,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
+      toast.success("Logged in successfully!");
       router.push("/dashboard");
     } catch (err) {
       setError(err.message || "Login failed. Please check your credentials.");

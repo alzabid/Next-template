@@ -1,11 +1,17 @@
 "use client";
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { Mail, Phone, Award, Users, Landmark, User, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { getMembers } from "@/lib/api";
+import { useSearchParams } from "next/navigation";
 
-export default function ExecutivesPage() {
+function ExecutivesContent() {
+  const searchParams = useSearchParams();
+  const yearQuery = searchParams.get("year");
+  
   const [executives, setExecutives] = useState([]);
+  const [availableYears, setAvailableYears] = useState([]);
+  const [selectedYear, setSelectedYear] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,6 +52,28 @@ export default function ExecutivesPage() {
 
         data.sort((a, b) => getOrder(a) - getOrder(b));
         
+        // Intelligently select current term
+        const date = new Date();
+        const y = date.getFullYear();
+        const m = date.getMonth(); // 0 is January, 5 is June
+        const currentTermYear = m < 5 ? y - 1 : y;
+        const currentTermStr = `${currentTermYear}-${(currentTermYear + 1).toString().slice(2)}`;
+
+        const dbYears = [...new Set(data.map(e => e.year).filter(Boolean))];
+        if (!dbYears.includes(currentTermStr)) {
+          dbYears.push(currentTermStr);
+        }
+        const years = dbYears.sort((a, b) => b.localeCompare(a));
+        setAvailableYears(years);
+
+        if (yearQuery && years.includes(yearQuery)) {
+          setSelectedYear(yearQuery);
+        } else if (years.includes(currentTermStr)) {
+          setSelectedYear(currentTermStr);
+        } else if (years.length > 0) {
+          setSelectedYear(years[0]);
+        }
+        
         setExecutives(data);
       } catch (error) {
         console.error("Failed to fetch executives:", error);
@@ -54,13 +82,17 @@ export default function ExecutivesPage() {
       }
     };
     fetchExecutives();
-  }, []);
+  }, [yearQuery]);
 
   // Statistics
   const stats = [
     { number: "6", label: "Executive Members", icon: Users },
     { number: "40+", label: "Years of Service", icon: Award },
   ];
+
+  const filteredExecutives = executives.filter(
+    (executive) => !selectedYear || executive.year === selectedYear
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
@@ -132,8 +164,25 @@ export default function ExecutivesPage() {
             <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
           </div>
         ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {executives.map((executive) => (
+          <>
+            {availableYears.length > 0 && (
+              <div className="flex justify-center md:justify-end mb-8">
+                <div className="inline-flex items-center bg-white rounded-xl shadow-sm border border-gray-200 p-2">
+                  <span className="text-gray-500 font-medium px-3 text-sm">Select Term:</span>
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value)}
+                    className="bg-gray-50 border border-gray-200 text-gray-800 font-semibold text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 outline-none transition-colors cursor-pointer"
+                  >
+                    {availableYears.map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredExecutives.map((executive) => (
             <div
               key={executive.id}
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border-t-4 border-blue-600 group"
@@ -221,6 +270,7 @@ export default function ExecutivesPage() {
             </div>
           ))}
         </div>
+        </>
         )}
       </div>
 
@@ -267,5 +317,17 @@ export default function ExecutivesPage() {
         </div>
       </div> */}
     </div>
+  );
+}
+
+export default function ExecutivesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+      </div>
+    }>
+      <ExecutivesContent />
+    </Suspense>
   );
 }
