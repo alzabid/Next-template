@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Image as ImageIcon,
   User,
+  Users,
   LogOut,
   Menu,
   X,
@@ -26,6 +27,13 @@ const sidebarLinks = [
     label: "Dashboard",
     icon: LayoutDashboard,
     description: "Overview & analytics",
+    color: "blue",
+  },
+  {
+    href: "/dashboard/members",
+    label: "Members",
+    icon: Users,
+    description: "Manage members",
     color: "blue",
   },
   {
@@ -59,19 +67,19 @@ const sidebarLinks = [
 ];
 
 const activeColors = {
-  blue: "from-blue-500/20 to-blue-600/5 border-blue-500/30 text-blue-400",
-  violet: "from-violet-500/20 to-violet-600/5 border-violet-500/30 text-violet-400",
-  amber: "from-amber-500/20 to-amber-600/5 border-amber-500/30 text-amber-400",
-  rose: "from-rose-500/20 to-rose-600/5 border-rose-500/30 text-rose-400",
-  emerald: "from-emerald-500/20 to-emerald-600/5 border-emerald-500/30 text-emerald-400",
+  blue: "bg-blue-50 border-blue-200 text-blue-700",
+  violet: "bg-violet-50 border-violet-200 text-violet-700",
+  amber: "bg-amber-50 border-amber-200 text-amber-700",
+  rose: "bg-rose-50 border-rose-200 text-rose-700",
+  emerald: "bg-emerald-50 border-emerald-200 text-emerald-700",
 };
 
 const activeIconBg = {
-  blue: "bg-blue-500/20 text-blue-400 shadow-blue-500/10",
-  violet: "bg-violet-500/20 text-violet-400 shadow-violet-500/10",
-  amber: "bg-amber-500/20 text-amber-400 shadow-amber-500/10",
-  rose: "bg-rose-500/20 text-rose-400 shadow-rose-500/10",
-  emerald: "bg-emerald-500/20 text-emerald-400 shadow-emerald-500/10",
+  blue: "bg-blue-100 text-blue-600 shadow-sm",
+  violet: "bg-violet-100 text-violet-600 shadow-sm",
+  amber: "bg-amber-100 text-amber-600 shadow-sm",
+  rose: "bg-rose-100 text-rose-600 shadow-sm",
+  emerald: "bg-emerald-100 text-emerald-600 shadow-sm",
 };
 
 const activeBar = {
@@ -105,14 +113,14 @@ export default function DashboardLayout({ children }) {
           hour: "2-digit",
           minute: "2-digit",
           hour12: true,
-        })
+        }),
       );
       setCurrentDate(
         now.toLocaleDateString("en-US", {
           weekday: "short",
           month: "short",
           day: "numeric",
-        })
+        }),
       );
     };
     tick();
@@ -165,37 +173,37 @@ export default function DashboardLayout({ children }) {
         }`}
       >
         {/* Background with subtle pattern */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] via-[#111827] to-[#0c1222]" />
+        <div className="absolute inset-0 bg-white border-r border-slate-200" />
         <div
           className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.3) 1px, transparent 0)",
+              "radial-gradient(circle at 1px 1px, rgba(0,0,0,0.3) 1px, transparent 0)",
             backgroundSize: "24px 24px",
           }}
         />
-        <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-blue-600/5 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-blue-50/50 to-transparent border-r border-slate-200" />
 
         {/* Content wrapper — relative for z-index above background */}
         <div className="relative z-10 flex flex-col h-full">
           {/* ── Brand Header ── */}
-          <div className="h-[68px] flex items-center justify-between px-5 border-b border-white/[0.06] flex-shrink-0">
+          <div className="h-[68px] flex items-center justify-between px-5 border-b border-slate-100 flex-shrink-0">
             <Link href="/dashboard" className="flex items-center gap-3 group">
               <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/30 group-hover:shadow-blue-500/50 transition-all duration-300 group-hover:scale-105">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div className="leading-none">
-                <span className="text-[15px] font-bold text-white tracking-tight block">
+                <span className="text-[15px] font-bold text-slate-800 tracking-tight block">
                   BAESA
                 </span>
-                <span className="text-[10px] text-blue-400/60 font-semibold uppercase tracking-[0.15em]">
+                <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-[0.15em]">
                   Admin Panel
                 </span>
               </div>
             </Link>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-all"
+              className="lg:hidden w-8 h-8 flex items-center justify-center rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all"
             >
               <X className="w-5 h-5" />
             </button>
@@ -203,32 +211,32 @@ export default function DashboardLayout({ children }) {
 
           {/* ── Profile Card ── */}
           <div className="px-4 pt-5 pb-2 flex-shrink-0">
-            <div className="relative bg-gradient-to-br from-white/[0.06] to-white/[0.02] rounded-2xl p-4 border border-white/[0.06] overflow-hidden">
+            <div className="relative bg-slate-50 rounded-2xl p-4 border border-slate-100 overflow-hidden">
               {/* Glow accent */}
-              <div className="absolute -top-8 -right-8 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl" />
+              <div className="absolute -top-8 -right-8 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl" />
 
               <div className="relative flex items-center gap-3.5">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-xl shadow-blue-600/20 ring-2 ring-white/10">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 via-indigo-500 to-violet-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md ring-2 ring-white">
                   {initials}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-semibold text-white truncate leading-tight">
+                  <p className="text-[13px] font-semibold text-slate-800 truncate leading-tight">
                     {user?.name || "Admin User"}
                   </p>
-                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                  <p className="text-[11px] text-slate-500 truncate mt-0.5">
                     {user?.email || "admin@gallery.com"}
                   </p>
                 </div>
               </div>
 
-              <div className="relative mt-3.5 pt-3 border-t border-white/[0.06] flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-emerald-500/20">
-                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+              <div className="relative mt-3.5 pt-3 border-t border-slate-200 flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-600 text-[10px] font-semibold px-2.5 py-1 rounded-full border border-emerald-200">
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                   Online
                 </span>
                 <div className="flex items-center gap-1.5">
-                  <Shield className="w-3 h-3 text-amber-400/70" />
-                  <span className="text-[10px] text-amber-400/70 font-medium">
+                  <Shield className="w-3 h-3 text-blue-500" />
+                  <span className="text-[10px] text-slate-600 font-medium">
                     {user?.role || "ADMIN"}
                   </span>
                 </div>
@@ -238,7 +246,9 @@ export default function DashboardLayout({ children }) {
 
           {/* ── Date/Time ── */}
           <div className="px-6 py-3 flex items-center justify-between flex-shrink-0">
-            <span className="text-[11px] text-slate-500 font-medium">{currentDate}</span>
+            <span className="text-[11px] text-slate-500 font-medium">
+              {currentDate}
+            </span>
             <span className="inline-flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
               <Clock className="w-3 h-3" />
               {currentTime}
@@ -266,8 +276,8 @@ export default function DashboardLayout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   className={`relative flex items-center gap-3.5 px-4 py-3 rounded-xl text-[13px] font-medium transition-all duration-200 group ${
                     isActive
-                      ? `bg-gradient-to-r ${activeColors[item.color]} border`
-                      : "text-slate-400 hover:text-white hover:bg-white/[0.04] border border-transparent"
+                      ? `${activeColors[item.color]} border`
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
                   }`}
                 >
                   {/* Active indicator */}
@@ -281,19 +291,19 @@ export default function DashboardLayout({ children }) {
                     className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-200 ${
                       isActive
                         ? `${activeIconBg[item.color]} shadow-sm`
-                        : "bg-white/[0.04] text-slate-500 group-hover:bg-white/[0.07] group-hover:text-slate-300"
+                        : "bg-slate-50 text-slate-500 group-hover:bg-slate-100 group-hover:text-slate-700"
                     }`}
                   >
                     <Icon className="w-[18px] h-[18px]" />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <span className="block leading-tight">{item.label}</span>
+                    <span className={`block leading-tight ${isActive ? 'text-slate-800 font-semibold' : 'text-slate-600 group-hover:text-slate-800'}`}>{item.label}</span>
                     <span
                       className={`text-[10px] leading-tight mt-0.5 block ${
                         isActive
-                          ? "opacity-50"
-                          : "text-slate-600 group-hover:text-slate-500"
+                          ? "text-slate-500"
+                          : "text-slate-400 group-hover:text-slate-500"
                       }`}
                     >
                       {item.description}
@@ -319,31 +329,31 @@ export default function DashboardLayout({ children }) {
           <div className="px-3 pb-2 flex-shrink-0 space-y-1">
             <Link
               href="/"
-              className="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-[13px] text-slate-400 hover:text-white hover:bg-white/[0.04] transition-all group border border-transparent"
+              className="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-[13px] text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all group border border-transparent"
             >
-              <div className="w-9 h-9 rounded-lg bg-white/[0.04] flex items-center justify-center group-hover:bg-white/[0.07] transition-colors">
-                <Home className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-300" />
+              <div className="w-9 h-9 rounded-lg bg-slate-50 flex items-center justify-center group-hover:bg-slate-100 transition-colors">
+                <Home className="w-[18px] h-[18px] text-slate-500 group-hover:text-slate-700" />
               </div>
-              <span>Back to Website</span>
+              <span className="font-medium">Back to Website</span>
             </Link>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-[13px] text-red-400/70 hover:text-red-300 hover:bg-red-500/[0.06] transition-all w-full group border border-transparent hover:border-red-500/10"
+              className="flex items-center gap-3.5 px-4 py-2.5 rounded-xl text-[13px] text-red-600 hover:text-red-700 hover:bg-red-50 transition-all w-full group border border-transparent hover:border-red-100"
             >
-              <div className="w-9 h-9 rounded-lg bg-red-500/[0.08] flex items-center justify-center group-hover:bg-red-500/[0.12] transition-colors">
-                <LogOut className="w-[18px] h-[18px] text-red-400/70 group-hover:text-red-300" />
+              <div className="w-9 h-9 rounded-lg bg-red-50 flex items-center justify-center group-hover:bg-red-100 transition-colors">
+                <LogOut className="w-[18px] h-[18px] text-red-500 group-hover:text-red-600" />
               </div>
-              <span>Sign Out</span>
+              <span className="font-medium">Sign Out</span>
             </button>
           </div>
 
           {/* ── Branding Footer ── */}
-          <div className="px-5 py-3.5 border-t border-white/[0.04] flex-shrink-0">
+          <div className="px-5 py-3.5 border-t border-slate-100 flex-shrink-0">
             <div className="flex items-center justify-between">
-              <p className="text-[10px] text-slate-600">
+              <p className="text-[10px] text-slate-500 font-medium">
                 © {new Date().getFullYear()} BAESA
               </p>
-              <span className="text-[9px] text-slate-700 bg-white/[0.03] px-2 py-0.5 rounded-full border border-white/[0.04]">
+              <span className="text-[9px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-200">
                 v1.0.0
               </span>
             </div>
@@ -368,7 +378,7 @@ export default function DashboardLayout({ children }) {
                 {sidebarLinks.find(
                   (l) =>
                     pathname === l.href ||
-                    (l.href !== "/dashboard" && pathname.startsWith(l.href))
+                    (l.href !== "/dashboard" && pathname.startsWith(l.href)),
                 )?.label || "Dashboard"}
               </h2>
             </div>

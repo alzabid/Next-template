@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Mail,
@@ -8,92 +8,61 @@ import {
   Users,
   Filter,
   MailCheck,
+  Download,
+  Loader2,
+  AlertCircle,
+  CheckCircle,
 } from "lucide-react";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+import { getMembers, getSetting } from "@/lib/api";
 
 export default function MembersPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("All");
   const [selectedYear, setSelectedYear] = useState("All");
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pdfList, setPdfList] = useState([]);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [toast, setToast] = useState(null);
 
-  // Sample members data
-  const members = [
-    {
-      id: 1,
-      name: "Dr. Md. Asad Shariff",
-      title: "Director & Chief Scientific Officer",
-      department: "Bangladesh Atomic Energy Commission",
-      email: "asad_shariff_roni@yahoo.com",
-      joinYear: "2024",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1757845365_cropped_image.png",
-    },
-    {
-      id: 2,
-      name: "Dr. Afroja Sultana",
-      title: "Medical Officer",
-      department: "National Institute of Nuclear Medicine & Allied Sciences",
-      email: "afrojasultanashukhi@gmail.com",
-      joinYear: "2024",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 3,
-      name: "Dr. Mohammad Rajib",
-      title: "Principal Geologist",
-      department: "Institute of Nuclear Geological Sciences",
-      email: "rajib.mohammad@gmail.com",
-      joinYear: "2024",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1763444837_cropped_image.png",
-    },
-    {
-      id: 4,
-      name: "Dr. Md. Abdullah Al Mamun",
-      title: "Principal Scientific Officer",
-      department: "Atomic Energy Centre, Dhaka",
-      email: "mamun.aec@baec.gov.bd",
-      joinYear: "2016",
-      image:
-        "https://baec.org.bd/uploads/images/researchers/1765797505_cropped_image.png",
-    },
-    {
-      id: 5,
-      name: "Dr. Azmal Kabir Sarker",
-      title: "Principal Medical Officer",
-      department: "Institute of Nuclear Medicine & Allied Sciences, Suhrawardi",
-      email: "azmalbaec@gmail.com",
-      joinYear: "2016",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 6,
-      name: "Mr. Md. Mosharraf Hosain",
-      title: "Scientific Officer",
-      department: "Institute of Food and Radiation Biology",
-      email: "mosharrafjnu722@gmaiI.com",
-      joinYear: "2014",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 7,
-      name: "Mr. Md. Aliuzzaman",
-      title: "Principal Scientific Officer",
-      department:
-        "Bangladesh Atomic Energy Commission",
-      email: "palash.eng07@gmail.com",
-      joinYear: "2014",
-      image: "https://baec.org.bd/assets/image_placeholder.png",
-    },
-    {
-      id: 8,
-      name: "Dr. Ayesha Siddiqua",
-      title: "Principal Scientist",
-      department: "Nuclear Agriculture",
-      email: "dr.siddiqua@baesa.org.bd",
-      joinYear: "2024",
-      image: "https://via.placeholder.com/200x200/1e40af/ffffff?text=AS",
-    },
-  ];
+  const showToast = (message, type = "error") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  useEffect(() => {
+    const fetchMembersData = async () => {
+      try {
+        const res = await getMembers("MEMBER");
+        setMembers(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch members:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    const fetchSettings = async () => {
+      try {
+        const res = await getSetting("members_pdf_list");
+        if (res.data && res.data.value) {
+          setPdfList(JSON.parse(res.data.value));
+        } else {
+          // Fallback check just in case
+          const legacyRes = await getSetting("members_pdf");
+          if (legacyRes.data && legacyRes.data.value) {
+            setPdfList([{ id: "legacy", name: "BAESA_Members_List.pdf" }]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings:", error);
+      }
+    };
+    fetchMembersData();
+    fetchSettings();
+  }, []);
 
   const departments = [
     "Select Institute",
@@ -107,23 +76,81 @@ export default function MembersPage() {
   const years = ["All", "2024", "2016", "2014"];
 
   const filteredMembers = members.filter((member) => {
-    const matchesSearch =
-      member.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = member.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesDepartment =
       selectedDepartment === "All" || member.department === selectedDepartment;
-    const matchesYear =
-      selectedYear === "All" || member.joinYear === selectedYear;
+    const matchesYear = selectedYear === "All" || member.year === selectedYear;
     return matchesSearch && matchesDepartment && matchesYear;
   });
 
   const memberStats = {
     total: members.length,
     departments: [...new Set(members.map((m) => m.department))].length,
-    years: [...new Set(members.map((m) => m.joinYear))].length,
+    years: [...new Set(members.map((m) => m.year))].length,
+  };
+
+  const handleDownloadPDF = async () => {
+    if (pdfList.length > 0) {
+      setDownloadingPdf(true);
+      try {
+        const activePdf = pdfList[0];
+        const fetchId = activePdf.id === "legacy" ? "members_pdf_legacy" : `members_pdf_${activePdf.id}`;
+        
+        let pdfData = null;
+        if (activePdf.id === "legacy") {
+           const res1 = await getSetting("members_pdf_legacy");
+           if (res1.data && res1.data.value) pdfData = res1.data.value;
+           else {
+             const res2 = await getSetting("members_pdf");
+             if (res2.data && res2.data.value) pdfData = res2.data.value;
+           }
+        } else {
+           const res = await getSetting(fetchId);
+           if (res.data && res.data.value) pdfData = res.data.value;
+        }
+
+        if (pdfData) {
+          const link = document.createElement("a");
+          link.href = pdfData;
+          link.download = activePdf.name || "BAESA_Members_List.pdf";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          showToast("Failed to fetch the document data.", "error");
+        }
+      } catch(e) {
+        showToast("Failed to download PDF document.", "error");
+      } finally {
+        setDownloadingPdf(false);
+      }
+    } else {
+      showToast("No PDF uploaded here", "error");
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
+      {/* Toast */}
+      {toast && (
+        <div
+          className={`fixed top-20 right-6 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-sm font-medium transition-all ${
+            toast.type === "success"
+              ? "bg-emerald-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {toast.type === "success" ? (
+            <CheckCircle className="w-5 h-5" />
+          ) : (
+            <AlertCircle className="w-5 h-5" />
+          )}
+          {toast.message}
+        </div>
+      )}
+
       {/* Page Header */}
       <div className=" text-blue-800 py-16">
         <div className="text-center max-w-7xl mx-auto px-4">
@@ -189,7 +216,7 @@ export default function MembersPage() {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Bar */}
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <div className="relative">
                 <Search className=" text-black absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5" />
                 <input
@@ -200,10 +227,10 @@ export default function MembersPage() {
                   className="w-full text-black pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Department Filter */}
-            <div className="md:w-[400]">
+            {/* <div className="md:w-[400]">
               <div className="relative">
                 <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <select
@@ -218,7 +245,7 @@ export default function MembersPage() {
                   ))}
                 </select>
               </div>
-            </div>
+            </div> */}
 
             {/* Year Filter */}
             {/* <div className="md:w-48">
@@ -237,6 +264,22 @@ export default function MembersPage() {
                   ))}
               </select>
             </div> */}
+
+            {/* Download Button */}
+            <div className="ml-auto flex items-center">
+              <button
+                onClick={handleDownloadPDF}
+                disabled={downloadingPdf}
+                className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 disabled:bg-blue-800/70 text-white px-5 py-2.5 rounded-lg transition-colors shadow-md font-semibold"
+              >
+                {downloadingPdf ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Download className="w-5 h-5" />
+                )}
+                Download PDF
+              </button>
+            </div>
           </div>
 
           <div className="mt-4 text-sm text-gray-600">
@@ -245,56 +288,73 @@ export default function MembersPage() {
         </div>
 
         {/* Members Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredMembers.map((member) => (
-            <div
-              key={member.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 border-t-4 border-blue-600 group"
-            >
-              {/* Member Image */}
-              <div className="relative h-72 bg-gradient-to-br from-blue-100 to-blue-50 overflow-hidden">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                {/* <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                  {member.joinYear}
-                </div> */}
-              </div>
-
-              {/* Member Info */}
-              <div className="p-5">
-                <h3 className="text-lg font-bold text-gray-800 mb-1 group-hover:text-blue-600 transition-colors">
-                  {member.name}
-                </h3>
-                <p className="text-sm text-blue-600 font-semibold mb-3">
-                  {member.title}
-                </p>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-start gap-2">
-                    <Building2 className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-gray-600">{member.department}</p>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <MailCheck className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                    {/* <Award className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" /> */}
-                    <p className="text-xs text-gray-600">{member.email}</p>
-                  </div>
-                </div>
-
-                <a
-                  href={`mailto:${member.email}`}
-                  className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors duration-200 text-sm font-semibold"
-                >
-                  <Mail className="w-4 h-4" />
-                  Contact
-                </a>
-              </div>
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-blue-800 text-white text-sm uppercase tracking-wider">
+                    <th className="py-4 px-6 font-semibold whitespace-nowrap">
+                      Name
+                    </th>
+                    <th className="py-4 px-6 font-semibold whitespace-nowrap">
+                      Designation (BAEC)
+                    </th>
+                    <th className="py-4 px-6 font-semibold whitespace-nowrap">
+                      Mobile Number
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {filteredMembers.map((member) => (
+                    <tr
+                      key={member.id}
+                      className="hover:bg-blue-50 transition-colors duration-200"
+                    >
+                      <td className="py-4 px-6 min-w-[250px]">
+                        <div className="flex items-center gap-4">
+                          {member.image ? (
+                            <img
+                              src={member.image}
+                              alt={member.name}
+                              className="w-12 h-12 rounded-full object-cover border-2 border-blue-100 shadow-sm"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-800 font-bold text-lg shadow-sm">
+                              {member.name?.charAt(0) || "M"}
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-bold text-gray-800 text-base">
+                              {member.name}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 min-w-[300px]">
+                        <div className="flex items-start gap-2">
+                          <Building2 className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+                          <p className="text-sm text-gray-700 font-medium">
+                            {member.department || "N/A"}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6 min-w-[150px]">
+                        <p className="text-sm font-semibold text-gray-700">
+                          {member.phone || "N/A"}
+                        </p>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
 
         {/* No Results Message */}
         {filteredMembers.length === 0 && (

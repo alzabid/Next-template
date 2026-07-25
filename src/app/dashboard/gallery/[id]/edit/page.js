@@ -217,7 +217,6 @@ export default function EditGalleryItem({ params }) {
                 value={form.title}
                 onChange={handleChange}
                 placeholder="Event title"
-                required
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
               />
             </div>
@@ -237,7 +236,6 @@ export default function EditGalleryItem({ params }) {
                   value={form.date}
                   onChange={handleChange}
                   placeholder="e.g., March 15, 2025"
-                  required
                   className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
                 />
               </div>
@@ -254,7 +252,6 @@ export default function EditGalleryItem({ params }) {
                   value={form.location}
                   onChange={handleChange}
                   placeholder="e.g., Dhaka, Bangladesh"
-                  required
                   className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
                 />
               </div>
@@ -274,7 +271,6 @@ export default function EditGalleryItem({ params }) {
                 value={form.attendees}
                 onChange={handleChange}
                 placeholder="e.g., 250+ Scientists"
-                required
                 className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/30 transition-all"
               />
             </div>

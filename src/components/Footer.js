@@ -1,4 +1,5 @@
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
     return (
@@ -28,34 +29,34 @@ export default function Footer() {
                         </h3>
                         <ul className="space-y-2">
                             <li>
-                                <a href="#about" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
+                                <Link href="/about" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
                                     → About Us
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#executives" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
+                                <Link href="/executives" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
                                     → BAESA Executives
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#members" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
+                                <Link href="/members" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
                                     → Members
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#news" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
+                                <Link href="/news" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
                                     → News & Events
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#gallery" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
+                                <Link href="/gallery" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
                                     → Photo Gallery
-                                </a>
+                                </Link>
                             </li>
                             <li>
-                                <a href="#contact" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
+                                <Link href="/contact" className="text-blue-100 hover:text-white hover:pl-2 transition-all duration-200 block text-sm">
                                     → Contact
-                                </a>
+                                </Link>
                             </li>
                         </ul>
                     </div>
